@@ -1,0 +1,14 @@
+cd
+mkdir exercise1
+cd exercise1
+cp /home/eric/exercise1/abc123.txt
+head abc123.txt
+wc -l abc123.txt
+sort abc123.txt > seqs.sort.fa
+while read myline; do
+	echo $myline
+	echo ""
+	echo $myline
+done < seqs.sort.fa  >> seqs.sort.dup.fa
+grep '>' seqs.sort.dup.fa | uniq > seqs.uniq.fa
+cut -f2 seqs.uniq.fa | sort | wc -l > answer.txt

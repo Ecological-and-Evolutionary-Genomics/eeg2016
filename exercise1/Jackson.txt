@@ -2,5 +2,5 @@ cd
 cd Desktop
 mkdir exercise1
 wget https://raw.githubusercontent.com/rec3141/eeg2016/master/exercise1/ex1.txt
-vim ex1.txt
+vim -es '+%print' '+:q!' ex1.txt
 wc *.txt | sort -n | head -1

@@ -1,0 +1,24 @@
+#change directory to home
+cd
+
+#make new folder called "exercise1"
+mkdir exercise1
+
+#move into exercise1
+cd exercise1
+
+#download files into folder
+wget https://raw.githubusercontent.com/rec3141/eeg2016/master/exercise1/ex1.txt #-O/PATHNAME/exercise1
+
+#preview the first 5 lines
+head -5 ex1.txt
+
+#count the # lines | #sort by length
+wc -l ext1.txt | sort -n ext1.txt > seqs.sort.fa
+
+
+while read seqs.sort.fa; do
+  echo $myline >> newfile.txt
+  echo "" >> newfile.txt
+done < file.txt
+

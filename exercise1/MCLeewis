@@ -8,17 +8,37 @@ mkdir exercise1
 cd exercise1
 
 #download files into folder
-wget https://raw.githubusercontent.com/rec3141/eeg2016/master/exercise1/ex1.txt -O/PATHNAME/exercise1
+wget https://raw.githubusercontent.com/rec3141/eeg2016/master/exercise1/ex1.txt 
 
 #preview the first 5 lines
 head -5 ex1.txt
 
-#count the # lines | #sort by length
-wc -l ext1.txt | sort -n ext1.txt > seqs.sort.fa
+#count the # lines 
+wc -l ext1.txt 
 
+#sort by length
+sort -n ext1.txt > seqs.sort.fa
 
-while read seqs.sort.fa; do
-  echo $myline >> newfile.txt
-  echo "" >> newfile.txt
-done < file.txt
+#output each line of seqs.sort.fa two times, with each line separated by a blank line, and save everything to a new file called seqs.dup.fa.
+while read myline; do
+  echo $myline >> seqs.dup.fa
+  echo "" >> seqs.dup.fa
+  echo $myline >> seqs.dup.fa
+  echo "" >> seqs.dup.fa
+done < seqs.sort.fa
+
+#Output the non-blank lines from seqs.dup.fa and dereplicate them into a new file called seqs.uniq.fa.
+while read myline; do
+    echo $myline |  awk '$0 !~ /^$/' >> seqs.uniq.fa
+done < seqs.dup.fa
+
+# count the number of unique DNA sequences in the file and output value to new file
+cut -f2 seqs.uniq.fa | sort | grep '[ATGC]' | uniq | wc -l > ../ex1-answer.txt
+
+# delete all files beginning with seqs
+rm seqs*
+
+# delete folder & everything inside
+cd ../
+rmdir -recursive exercise1
 

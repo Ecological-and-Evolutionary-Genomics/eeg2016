@@ -1,5 +1,5 @@
 cd /home/manager
 mkdir exercise1
-cd exercise 1
+cd exercise1
 curl -o ex1.txt https://raw.githubusercontent.com/rec3141/eeg2016/master/exercise1/ex1.txt
 less ex1.txt

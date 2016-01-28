@@ -1,6 +1,20 @@
 #go to home directory
 cd
+
 #make directory named exercise1
 mkdir exercise1
+
 #go to new directory
 cd exercise1
+
+#download the file ex1.txt
+wget https://raw.githubusercontent.com/rec3141/eeg2016/master/exercise1/ex1.txt
+
+#Preview the file ext1.txt
+less ex1.txt
+
+#count the number of lines 
+wc -l ex1.txt
+
+#Sort files and save 
+sort ex1.txt > seqs.sort.fa

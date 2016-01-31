@@ -1,0 +1,8 @@
+sed -n '1~4s/^@/>/p;2~4p' SRR1145846_S1_L001_R1_001.fastq > seqs.fasta  ##creates a fasta from a fastq 
+	
+# sort by ID (every other line): first add special characters around the fasta header, remove new line symbols, sort numerically on the second part of the fasta header, put back new line characters, remove the empty line created during the process.
+sed -e '/>/s/^/@/' -e '/>/s/$/#/' seqs.fasta | tr -d "\n" | tr "@" "\n" | sort -t "_" -k2n | tr "#" "\n" | sed -e '/^$/d' > orderedseqs.fasta 
+
+# count unique fasta 
+grep '[ATGC]' orderedseqs.fasta  | uniq | wc -l > ../ex2-answer.txt
+	##answer: 105242##?

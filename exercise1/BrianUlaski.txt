@@ -1,3 +1,5 @@
+# Brian Ulaski | eeg2016 | exercise 1
+
 # 1. Go to your home directory (/home/yourname).
 cd
 

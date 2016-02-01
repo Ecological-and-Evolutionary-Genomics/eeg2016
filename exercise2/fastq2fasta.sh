@@ -36,8 +36,12 @@ paste - - > $outfile
 # insert script from exercise1 to sort and count uniq
 
 # define new variable 
-$savefile=`basename -s fake $outfile`
-# to separate fake-fasta files back into real-fasta files use tr to replace tab characters with newline characters
+savefile=`basename -s fake $outfile`
 
+# to separate fake-fasta files back into real-fasta files use tr to replace tab characters with newline characters
 cat $outfile | tr '\t' '\n' > $savefile
+
+# remove outfile
+rm $outfile
+
 

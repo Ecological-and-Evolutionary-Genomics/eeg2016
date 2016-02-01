@@ -1,6 +1,30 @@
 cd
+
 cd Desktop
+
 mkdir exercise1
+
+cd exercise1
+
 wget https://raw.githubusercontent.com/rec3141/eeg2016/master/exercise1/ex1.txt
+
 vim -es '+%print' '+:q!' ex1.txt
-wc *.txt | sort -n | head -1
+
+wc *.txt | sort -n ex1.txt > seqs.sort.fa
+
+while read myline; do
+  echo $myline >> seqs.dup.fa
+  echo "" >> seqs.dup.fa
+  echo $myline >> seqs.dup.fa
+  echo "" >> seqs.dup.fa
+done < seqs.sort.fa
+
+sort -u seqs.dup.fa > seqs1.uniq.fa 
+
+grep . seqs1.uniq.fa > seqs.uniq.fa
+
+cut -f2 seqs.uniq.fa | sort -u | grep '[ATGC]' | uniq | wc -l > ../ex1-answer.txt
+
+rm -f seqs.* | rm -f seqs1.*
+
+rm -rf exercise1

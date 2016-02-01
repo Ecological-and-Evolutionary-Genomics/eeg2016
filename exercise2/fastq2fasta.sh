@@ -6,8 +6,9 @@ file=$1
 # runs the command 'basename' to remove the suffix 'fastq' from $file and save the result to a variable called 'outfile'
 outfile=`basename -s fastq $file`
 
-# appends the new suffix "fasta" to the output file name
-outfile=$outfile"fasta"
+# appends the new suffix "fastafake" to the output file name
+outfile=$outfile"fastafake"
+
 
 # match the single plus sign on a line by itself plus the two lines before it
 # ^ matches the beginning of a line
@@ -26,5 +27,17 @@ grep -v '^\+$' | \
 grep -v '^\-\-$' | \
 
 # tr is the transliterate command, it takes the characters from the first block and replaces each instance with the characters in the second block, one by one, and outputs the result to a new file
-tr '[@: ]' '[>__]' > $outfile
+tr '[@: ]' '[>__]' | \
+
+# paste takes the input and concatenates the corresponding lines of the given input files with a tab character by default
+# then we output the text to $outfile
+paste - - > $outfile
+
+# insert script from exercise1 to sort and count uniq
+
+# define new variable 
+$savefile=`basename -s fake $outfile`
+# to separate fake-fasta files back into real-fasta files use tr to replace tab characters with newline characters
+
+cat $outfile | tr '\t' '\n' > $savefile
 

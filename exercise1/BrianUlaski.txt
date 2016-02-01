@@ -1,5 +1,7 @@
 # Brian Ulaski | eeg2016 | exercise 1
 
+#####################################
+
 # 1. Go to your home directory (/home/yourname).
 cd
 
@@ -18,16 +20,16 @@ head ex1.txt
 # 6. Count the number of lines in 'ex1.txt'.
 wc -l ex1.txt
 
-# 7. Sort 'ex1.txt' by sequence identifier and save the output to a new file	   # called 'seqs.sort.fa'.
-sort -n ex1.txt > seqs.sort.fa
+# 7. Sort 'ex1.txt' by sequence identifier and save the output to a new file called 'seqs.sort.fa'.
+sort -n ex1.txt >> seqs.sort.fa
 
-# 8. The syntax to read 'file.txt' line by line and do something with each line is # shown below. This example echoes (prints out) each line, followed by a blank    # line, and appends each to a file called 'newfile.txt':
+# 8. The syntax to read 'file.txt' line by line and do something with each line is shown below. This example echoes, or prints # out, each line, followed by a blank line, and appends each to a file called 'newfile.txt':
 #    while read myline; do
 #       echo $myline >> newfile.txt
 #       echo "" >> newfile.txt
 #    done < file.txt
 
-# Use the construction above to output each line of 'seqs.sort.fa' two times, with # each line separated by a blank line, and save everything to a new file called   # 'seqs.dup.fa'.
+# Use the construction above to output each line of 'seqs.sort.fa' two times, with each line separated by a blank line, and    # save everything to a new file called 'seqs.dup.fa'.
 while read myline; do
 	echo $myline >> seqs.dup.fa
 	echo "" >> seqs.dup.fa
@@ -36,6 +38,24 @@ while read myline; do
 done < seqs.sort.fa
 
 # 9. Output the non-blank lines from 'seqs.dup.fa' and dereplicate them into a new file called 'seqs.uniq.fa'.
+while read myline; do
+	grep -v "^$" seqs.dup.fa >> seqs.nonblank.fa
+done < seqs.dup.fa
+
+while read myline; do
+	uniq >> seqs.uniq.fa
+done < seqs.nonblank.fa
+
+# 10. Count the number of unique DNA sequences in the file 'seqs.uniq.fa' and output the value to a file in your home directory # called 'ex1-answer.txt'.
+wc -l < seqs.uniq.fa >> /home/brian/ex1-answer.txt
+
+# 11. Delete all of the files that have names beginning with 'seqs'.
+rm seqs*.*
+
+# 12. Delete the folder 'exercise1' and everything inside of it.
+cd ..
+rm -rf exercise1
+
 
 
 

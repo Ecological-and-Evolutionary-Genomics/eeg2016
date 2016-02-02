@@ -6,3 +6,51 @@ mkdir exercise1
 
 #go to new directory
 cd exercise1
+
+#download the file ex1.txt
+wget https://raw.githubusercontent.com/rec3141/eeg2016/master/exercise1/ex1.txt
+
+#Preview the file ext1.txt
+less ex1.txt
+
+#count the number of lines 
+wc -l ex1.txt
+
+#Sort files and save 
+# Doesnt sort based on length of the indicator though...? still working that out
+sort ex1.txt > seqs.sort.fa
+
+#to output each line of seqs.sort.fa two times, with each line separated by a blank line, and save everything to a new file called seqs.dup.fa.
+while read line; do
+  echo "$line" >> seqs.dup.fa
+  echo "$line" >> seqs.dup.fa
+  echo "" >> seqs.dup.fa
+done < seqs.sort.fa
+
+#Output the non-blank lines from seqs.dup.fa and dereplicate them into a new file called seqs.uniq.fa.
+
+while read line; do
+  grep ">" >> seqs.noblank.fa
+done < seqs.dup.fa
+
+while read line; do
+ uniq >> seqs.uniq.fa
+done < seqs.noblank.fa
+
+rm seqs.noblank.fa
+
+
+# Count the number of unique DNA sequences in the file seqs.uniq.fa and output the value to a file in your home directory called ex1-answer.txt.
+
+wc -l seqs.uniq.fa > /home/manager/ex1-answer.txt
+
+
+#Delete all of the files that have names beginning with seqs.
+
+rm seqs.*
+
+# Delete the folder exercise1 and everything remaining inside of it.
+
+cd ..
+rm -r exercise1
+

@@ -1,0 +1,52 @@
+###Exercise 1 - In class example###
+#change directory to home
+cd
+
+#make new folder called "exercise1"
+mkdir exercise1
+
+#move into exercise1
+cd exercise1
+
+#download files into folder
+wget https://raw.githubusercontent.com/rec3141/eeg2016/master/exercise1/ex1.txt
+
+#preview the first 5 lines
+head -5 ex1.txt
+
+#count the # lines 
+wc -l ex1.txt 
+
+
+#sort by length
+sort ex1.txt > seqs.sort.fa
+#output each line of seqs.sort.fa two times, with each line separated by a blank line, and save everything to a new file called seqs.dup.fa.
+
+while read myline; do
+  echo $myline >> seqs.dup.fa
+  echo "" >> seqs.dup.fa
+  echo $myline >> seqs.dup.fa
+  echo "" >> seqs.dup.fa
+done < seqs.sort.fa
+
+#Output the non-blank lines from seqs.dup.fa and dereplicate them into a new file called seqs.uniq.fa.
+#$0 is a whole line argument - uses the length function to print only those lines whose length is > 0.
+
+while read myline; do
+    echo $myline |  awk '$0 !~ /^$/' >> seqs.uniq.fa
+done < seqs.dup.fa
+
+##Ian's solution: #9. Output the non-blank lines from seqs.dup.fa and dereplicate them into a new file called seqs.uniq.fa.
+##sort -u seqs.dup.fa > seqs.uniq.fa 
+##This results in 66 seqs. 1 too many.
+
+# count the number of unique DNA sequences in the file and output value to new file
+cut -f2 seqs.uniq.fa | sort | grep '[ATGC]' | uniq | wc -l > ../ex1-answer.txt 
+	##answer: 54##
+
+# delete all files beginning with seqs
+rm seqs*
+
+# delete folder & everything inside
+cd ../
+rmdir -recursive exercise1

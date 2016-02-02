@@ -1,0 +1,12 @@
+#need to replace the "@" with ">" # need to remove every 4th line (the quality data) AKA extract the first two lines in each block of 4 lines
+## sed: -n = "no printing" unless print flag (/p) is found.  sed -n 's/pattern/&/p' file > OutPutFile 
+'1-4 line number match @ then print, remove lines 2-4. 
+
+sed -n '1~4s/^@/>/p;2~4p' SRR1145846_S1_L001_R1_001.fastq > seqs.fasta  ##creates a fasta from a fastq 
+		##made a second "2seqs.fasta" in case I mess up the original 
+# sort by ID (every other line): first add special characters around the fasta header, remove new line symbols, sort numerically on the second part of the fasta header, put back new line characters, remove the empty line created during the process.
+sed -e '/>/s/^/@/' -e '/>/s/$/#/' seqs.fasta | tr -d "\n" | tr "@" "\n" | sort -t "_" -k2n | tr "#" "\n" | sed -e '/^$/d' > orderedseqs.fasta 
+
+# count unique (every other line)
+grep '[ATGC]' orderedseqs.fasta  | uniq | wc -l > ../ex2-answer.txt
+	##answer: 105242##

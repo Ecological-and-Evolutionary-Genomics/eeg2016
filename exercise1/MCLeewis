@@ -8,7 +8,7 @@ mkdir exercise1
 cd exercise1
 
 #download files into folder
-wget https://raw.githubusercontent.com/rec3141/eeg2016/master/exercise1/ex1.txt -O/PATHNAME/exercise1
+wget https://raw.githubusercontent.com/rec3141/eeg2016/master/exercise1/ex1.txt #-O/PATHNAME/exercise1
 
 #preview the first 5 lines
 head -5 ex1.txt

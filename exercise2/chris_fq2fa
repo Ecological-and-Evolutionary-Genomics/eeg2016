@@ -1,1 +1,8 @@
-#here we go....OH BOY!!
+#here we go....May be cheating though...
+
+#Onestep code to convert fastq to fasta files (found online FASTX_Toolkit)
+#Keeps unknown nucleotides and reports number of sequences
+#Output to SR1145846_S1_L001_R1_001.fa
+
+$fastq_to_fasta -i SRR1145846_S1_L001_R1_001.fastq -o SRR1145846_S1_L001_R1_001.fa  -n -v   
+

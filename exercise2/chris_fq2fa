@@ -31,7 +31,17 @@ tr '[@: ]' '[>__]' | \
 
 # paste takes the input and concatenates the corresponding lines of the given input files with a tab character by default
 # then we output the text to $outfile
-paste - - > $outfile
+paste - - > $outfile | \
 
 # insert script from exercise1 to sort and count uniq
 
+#sort outfile and output in file called seqs.sort.fa
+sort $outfile > seqs.sort.fa | \
+
+#trim out only unique sequences and put into file called 
+while read line; do
+ uniq >> seqs.uniq.fa
+done < seqs.sort.fa | \
+
+#count the number of lines ie. unique sequences and output into file called 
+wc -l seqs.uniq.fa > less | \

@@ -1,12 +1,24 @@
 #!/bin/bash
 
-# takes the first argument to the command line ($1) and saves it into a variable called 'file', which can be accessed at '$file'
+# to make this file executable, do 
+# chmod +x fastq2fasta.sh
+
+# run as ./fastq2fasta.sh FILENAME.fastq
+
+# the program automatically takes the first argument to the command line (FILENAME.fastq) and saves it into a variable called '$1'
+
+# now we are taking '$1' and saving it into a new variable called 'file', which can be accessed at '$file'
 file=$1
 
-# runs the command 'basename' to remove the suffix 'fastq' from $file and save the result to a variable called 'outfile'
+# if running by copy-and-paste, you can uncomment this and insert the SRR.. filename here and work from here on
+# file=FILENAME.fastq
+
+# backticks (`) can be used to run a command. here we save the output of the command in a new variable called 'outfile'
+# the command 'basename' removes the suffix 'fastq' from $file
 outfile=`basename -s fastq $file`
 
-# appends the new suffix "fastafake" to the output file name
+# now we appends the new suffix "fastafake" to the output file name
+# we need to use quotation marks to separate the variable name from the new suffix
 outfile=$outfile"fastafake"
 
 

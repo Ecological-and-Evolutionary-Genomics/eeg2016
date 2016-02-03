@@ -40,7 +40,7 @@ sort $outfile > seqs.sort.fa | \
 
 #trim out only unique sequences and put into file called 
 while read line; do
- uniq >> seqs.uniq.fa
+ uniq > seqs.uniq.fa
 done < seqs.sort.fa | \
 
 #count the number of lines ie. unique sequences and outputs to screen  

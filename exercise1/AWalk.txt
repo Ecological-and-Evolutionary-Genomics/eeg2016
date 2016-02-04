@@ -8,12 +8,13 @@ cd
 #make a new directory
 mkdir exercise_1
 
-##3
+##3 
+#go to new directory
 cd exercise_1
 
 ##4
-#Download the file ex1.txt from Github
-curl -o ex1.txt https://raw.githubusercontent.com/rec3141/eeg2016/master/exercise1/ex1.txt
+#Download the file ex1.txt from Github to my new folder
+curl -o ex1.txt https://raw.githubusercontent.com/rec3141/eeg2016/master/exercise1/ex1.txt /Users/alexiswalker/exercise_1
 
 ##5
 #preview the ex1.txt file

@@ -2,9 +2,7 @@
 
 #####################################
 
-###This is Eric's fastq2fasta.sh WITHOUT any meddling on my part
-
-# Thisis a modification to Eric's fastq2fasta.sh script - it includes additional lines for sorting and identifying unique sequences.
+# This script includes a few additional lines of code to Eric's fastq2fasta.sh script - it includes additional lines for sorting and identifying unique sequences.
 
 # the first argument to the command line ($1) and saves it into a variable called 'file', which can be accessed at '$file'
 file=$1

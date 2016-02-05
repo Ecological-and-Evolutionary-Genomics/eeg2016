@@ -37,6 +37,7 @@ tr '[@: ]' '[>__]' | \
 sed 'N;s/\n/\t/' | \
 sort -n | \
 uniq | \
+wc -l | \
 
 # paste takes the input and concatenates the corresponding lines of the given input files with a tab character by default
 # then we output the text to $outfile

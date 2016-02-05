@@ -34,14 +34,13 @@ grep -v '^\-\-$' | \
 # tr is the transliterate command, it takes the characters from the first block and replaces each instance with the characters in the second block, one by one, and outputs the result to a new file
 tr '[@: ]' '[>__]' | \
 
-# paste takes the input and concatenates the corresponding lines of the given input files with a tab character by default
-# then we output the text to $outfile
-paste - - > $outfile
-
 # insert script from exercise1 to sort and count uniq
 
-sed 'N;s/\n/\t/' $outfile | \
+sed 'N;s/\n/\t/' | \
 sort -n | \
+
+# paste takes the input and concatenates the corresponding lines of the given input files with a tab character by default
+# then we output the text to $outfile
 paste - - > $outfile
 
 # define new variable 

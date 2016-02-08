@@ -27,4 +27,6 @@ cut -f2 seqs.uniq.fa | sort -u | grep '[ATGC]' | uniq | wc -l > ../ex1-answer.tx
 
 rm -f seqs.* | rm -f seqs1.*
 
+cd ..
+
 rm -rf exercise1

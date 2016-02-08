@@ -1,26 +1,17 @@
-#!/bin/bash
+# Brian Ulaski | eeg2016 | exercise 2
 
-# to make this file executable, do 
-# chmod +x fastq2fasta.sh
+#####################################
 
-# run as ./fastq2fasta.sh FILENAME.fastq
+# This script includes a few additional lines of code to Eric's fastq2fasta.sh script - it includes additional lines for sorting and identifying unique sequences.
 
-# the program automatically takes the first argument to the command line (FILENAME.fastq) and saves it into a variable called '$1'
-
-# now we are taking '$1' and saving it into a new variable called 'file', which can be accessed at '$file'
+# the first argument to the command line ($1) and saves it into a variable called 'file', which can be accessed at '$file'
 file=$1
 
-# if running by copy-and-paste, you can uncomment this and insert the SRR.. filename here and work from here on
-# file=FILENAME.fastq
-
-# backticks (`) can be used to run a command. here we save the output of the command in a new variable called 'outfile'
-# the command 'basename' removes the suffix 'fastq' from $file
+# runs the command 'basename' to remove the suffix 'fastq' from $file and save the result to a variable called 'outfile'
 outfile=`basename -s fastq $file`
 
-# now we appends the new suffix "fastafake" to the output file name
-# we need to use quotation marks to separate the variable name from the new suffix
+# appends the new suffix "fastafake" to the output file name
 outfile=$outfile"fastafake"
-
 
 # match the single plus sign on a line by itself plus the two lines before it
 # ^ matches the beginning of a line
@@ -41,11 +32,16 @@ grep -v '^\-\-$' | \
 # tr is the transliterate command, it takes the characters from the first block and replaces each instance with the characters in the second block, one by one, and outputs the result to a new file
 tr '[@: ]' '[>__]' | \
 
+# insert script from exercise1 to sort and count uniq
+
+sed 'N;s/\n/\t/' | \
+sort -n | \
+uniq | \
+wc -l | \
+
 # paste takes the input and concatenates the corresponding lines of the given input files with a tab character by default
 # then we output the text to $outfile
 paste - - > $outfile
-
-# insert script from exercise1 to sort and count uniq
 
 # define new variable 
 savefile=`basename -s fake $outfile`
@@ -55,5 +51,3 @@ cat $outfile | tr '\t' '\n' > $savefile
 
 # remove outfile
 rm $outfile
-
-

@@ -35,15 +35,15 @@ paste - - > $outfile
 
 # insert script from exercise1 to sort and count uniq
 
-#sort outfile and output in file called seqs.sort.fa
+#sort fakefasta file (ie. $outfile)
 sort $outfile | \
 
-#trim out only unique sequences and put into file called 
+#trim out only unique sequences and put into file called seqs.uniqu.fa 
 while read line; do
  uniq > seqs.uniq.fa
 done < $outfile 
 
-#count the number of lines ie. unique sequences and outputs to screen  
+#count the number of lines in the seqs.unique.fa (ie. unique sequences) and outputs to screen  
 wc -l seqs.uniq.fa 
 
 # define new variable 

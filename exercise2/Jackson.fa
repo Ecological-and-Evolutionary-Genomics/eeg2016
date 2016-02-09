@@ -1,3 +1,7 @@
+chmod +x fastq2fasta.s
+
+run as ./fastq2fasta.sh SRR1145846_S1_L001_R1_001.fastq
+
  file=SRR1145846_S1_L001_R1_001.fastq    
  
  outfile=`basename -s fastq $file`

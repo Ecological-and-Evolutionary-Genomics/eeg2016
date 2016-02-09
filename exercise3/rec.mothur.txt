@@ -77,6 +77,9 @@ screen.seqs(fasta=stability.trim.contigs.good.unique.align, count=stability.trim
 
 summary.seqs(fasta=current, count=current)
 
+# remove duplicated bottom line (BUG) e.g. in bash
+# uniq stability.trim.contigs.good.good.count_table > tmp; mv tmp stability.trim.contigs.good.good.count_table
+
 #filter sequences to remove any bases that don't match the reference database
 
 filter.seqs(fasta=stability.trim.contigs.good.unique.good.align, vertical=T, trump=.)

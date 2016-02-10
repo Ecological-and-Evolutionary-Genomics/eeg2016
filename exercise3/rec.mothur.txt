@@ -1,0 +1,104 @@
+#Phylotyping
+#Identifying reads by comparing them to a database of known sequences
+
+#make a new file called stability.files to hold the names of our fastq files.
+#F3D0 F3D0_S188_L001_R1_001.fastq F3D0_S188_L001_R2_001.fastq
+
+#run the mothur command line interface ./mothur
+
+#if running this script as a batch file, do ./mothur rec.mothur.txt
+
+###
+#reduce error by creating contigs from your forward and reverse reads. the more they overlap the better. 
+
+make.contigs(file=stability.files)
+
+#this outputs several files
+#stability.trim.contigs.fasta   # trimmed contigs in fasta format
+#stability.trim.contigs.qual    # base by base quality calls on contigs
+#stability.contigs.report       # combined sequence report
+#stability.scrap.contigs.fasta  # contigs not passing quality controls
+#stability.scrap.contigs.qual   # quality calls on bad contigs
+#stability.contigs.groups       # group membership of each new contig
+
+#summarize the output contigs
+
+summary.seqs(fasta=stability.trim.contigs.fasta)
+
+#trim sequences that don't match expected lengths
+
+screen.seqs(fasta=stability.trim.contigs.fasta, maxambig=0, maxlength=275)
+
+#the output files from screen.seqs:
+#stability.trim.contigs.good.fasta   # good contigs
+#stability.trim.contigs.bad.accnos   # accession numbers for bad contigs
+
+#show current files... you can use these as shortcuts for writing the full file name
+
+get.current()
+
+#it is computationally wasteful to work with identical sequences, so get rid of them (mothur will remember that they exist)
+
+unique.seqs(fasta=stability.trim.contigs.good.fasta)
+
+#count up the sequences to make future calculations easier. "generate a table where the rows are the names of the unique sequences and the columns are the names of the groups. The table is then filled with the number of times each unique sequence shows up in each group."
+
+count.seqs(name=stability.trim.contigs.good.names)
+
+#summarize again
+
+summary.seqs(count=stability.trim.contigs.good.count_table)
+
+#we want a good database to align our sequences to, the smaller the better. this will output a trimmed database starting with a full-length 16S database. if you have your primer sequences you can make your own database. here we use the start and end positions for the primers used by the Schloss lab.
+
+pcr.seqs(fasta=silva.bacteria.fasta, start=11894, end=25319, keepdots=F)
+
+#rename the output database using the system command mv
+
+system(mv silva.bacteria.pcr.fasta silva.v4.fasta)
+
+#summarize
+
+summary.seqs(fasta=silva.v4.fasta)
+
+#let's align our sequences to the database
+
+ align.seqs(fasta=stability.trim.contigs.good.unique.fasta, reference=silva.v4.fasta)
+
+#summarize
+
+summary.seqs(fasta=stability.trim.contigs.good.unique.align, count=stability.trim.contigs.good.count_table)
+
+#clean up
+
+screen.seqs(fasta=stability.trim.contigs.good.unique.align, count=stability.trim.contigs.good.count_table, summary=stability.trim.contigs.good.unique.summary, start=1968, end=11550, maxhomop=8)
+
+#summarize
+
+summary.seqs(fasta=current, count=current)
+
+# remove duplicated bottom line (BUG) e.g. in bash
+# uniq stability.trim.contigs.good.good.count_table > tmp; mv tmp stability.trim.contigs.good.good.count_table
+
+#filter sequences to remove any bases that don't match the reference database
+
+filter.seqs(fasta=stability.trim.contigs.good.unique.good.align, vertical=T, trump=.)
+
+#filter to remove duplicated sequences again
+
+unique.seqs(fasta=stability.trim.contigs.good.unique.good.filter.fasta, count=stability.trim.contigs.good.good.count_table)
+
+#precluster sequences to remove some sequencing error
+
+pre.cluster(fasta=stability.trim.contigs.good.unique.good.filter.unique.fasta, count=stability.trim.contigs.good.unique.good.filter.count_table, diffs=2)
+
+#remove chimeras
+
+chimera.uchime(fasta=stability.trim.contigs.good.unique.good.filter.unique.precluster.fasta, count=stability.trim.contigs.good.unique.good.filter.unique.precluster.count_table, dereplicate=t)
+remove.seqs(fasta=stability.trim.contigs.good.unique.good.filter.unique.precluster.fasta, accnos=stability.trim.contigs.good.unique.good.filter.unique.precluster.uchime.accnos)
+
+#classify sequences using the RDP training set downloaded earlier. The cutoff of 80 selects only the best matches. If doing phylotyping prior to OTU clustering it is probably a good idea to set this much lower to catch all of the matches.
+
+classify.seqs(fasta=stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.fasta, count=stability.trim.contigs.good.unique.good.filter.unique.precluster.uchime.pick.count_table, reference=trainset9_032012.pds.fasta, taxonomy=trainset9_032012.pds.tax, cutoff=80)
+
+#finally, upload the summary file 

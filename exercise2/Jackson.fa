@@ -23,12 +23,15 @@ sort -u assignment2.dup.fasta > assignment2.uniq.fasta
 
 grep . assignment2.uniq.fasta > assignment2final.uniq.fasta
 
-cut -f2 assignment2final.uniq.fasta | sort -u | grep '[ATGC]' | uniq | wc -l > ../ex2-answer.txt
+cut -f2 assignment2final.uniq.fasta | sort -u | grep '[ATGC]' | uniq | wc -l > ex2-answer.txt
   answer is 45324*** This is before it is converted from a Fake Fasta format into a Real Fasta format. 
   After I convert it into Real Fasta format it unsorts my sequences and gives me a answer of 97930*** 
   I don't understand how its not just doubled; suddenly theres an extra 7K unique lines after i convert it into a real Fasta...
 
+savefile=`basename -s fake $outfile`
+
+cat $outfile | tr '\t' '\n' > $savefile
+
 head -n 100 $savefile > Jackson.fa
   
-
 rm $outfile

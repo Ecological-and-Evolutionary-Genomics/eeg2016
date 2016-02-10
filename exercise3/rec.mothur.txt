@@ -95,7 +95,7 @@ pre.cluster(fasta=stability.trim.contigs.good.unique.good.filter.unique.fasta, c
 #remove chimeras
 
 chimera.uchime(fasta=stability.trim.contigs.good.unique.good.filter.unique.precluster.fasta, count=stability.trim.contigs.good.unique.good.filter.unique.precluster.count_table, dereplicate=t)
-remove.seqs(fasta=stability.trim.contigs.good.unique.good.filter.unique.precluster.fasta, accnos=stability.trim.contigs.good.unique.good.filter.unique.precluster.uchime.accnos)
+remove.seqs(fasta=stability.trim.contigs.good.unique.good.filter.unique.precluster.fasta, accnos=stability.trim.contigs.good.unique.good.filter.unique.precluster.denovo.uchime.accnos)
 
 #classify sequences using the RDP training set downloaded earlier. The cutoff of 80 selects only the best matches. If doing phylotyping prior to OTU clustering it is probably a good idea to set this much lower to catch all of the matches.
 

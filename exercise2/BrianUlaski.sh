@@ -39,14 +39,11 @@ paste - - > $outfile
 # insert script from exercise1 to sort and count uniq
 less $outfile
 
-while read line; do
-uniq > seqs.uniq.fa
-done < $outfile
+# while read line; do
+# uniq > seqs.uniq.fa
+# done < $outfile
 
 grep -c ">' seqs.uniq.fa 
-
-# count lines
-wc -l seqs.uniq.fa
 
 # define new variable 
 savefile=`basename -s fake $outfile`
@@ -55,4 +52,9 @@ savefile=`basename -s fake $outfile`
 cat $outfile | tr '\t' '\n' > $savefile
 
 # remove outfile
-rm $outfile
+# rm $outfile
+
+
+
+
+

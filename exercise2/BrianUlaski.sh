@@ -43,7 +43,7 @@ less $outfile
 # uniq > seqs.uniq.fa
 # done < $outfile
 
-grep -c ">' seqs.uniq.fa 
+# grep -c ">' seqs.uniq.fa 
 
 # define new variable 
 savefile=`basename -s fake $outfile`

@@ -45,6 +45,9 @@ done < $outfile
 
 grep -c ">' seqs.uniq.fa 
 
+# count lines
+wc -l seqs.uniq.fa
+
 # define new variable 
 savefile=`basename -s fake $outfile`
 

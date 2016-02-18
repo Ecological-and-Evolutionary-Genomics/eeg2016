@@ -32,16 +32,18 @@ grep -v '^\-\-$' | \
 # tr is the transliterate command, it takes the characters from the first block and replaces each instance with the characters in the second block, one by one, and outputs the result to a new file
 tr '[@: ]' '[>__]' | \
 
-# insert script from exercise1 to sort and count uniq
-
-sed 'N;s/\n/\t/' | \
-sort -n | \
-uniq | \
-wc -l | \
-
 # paste takes the input and concatenates the corresponding lines of the given input files with a tab character by default
 # then we output the text to $outfile
 paste - - > $outfile
+
+# insert script from exercise1 to sort and count uniq
+less $outfile
+
+while read line; do
+uniq > seqs.uniq.fa
+done < $outfile
+
+grep -c ">' seqs.uniq.fa 
 
 # define new variable 
 savefile=`basename -s fake $outfile`

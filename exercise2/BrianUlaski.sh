@@ -54,7 +54,13 @@ cat $outfile | tr '\t' '\n' > $savefile
 # remove outfile
 # rm $outfile
 
+######count the number of unique sequences and write to a new file ###pico/nano
+savefile2=$savefile"seqs.uniq.fa" 
+cut -f2 $outfile | sort | grep '[ATGC]' | uniq | wc -l > $savefile2
+  ##answer=45324#
 
+####### after you run this then write the top 100 lines to a new file
+head -n 100 $savefile > BrianUlaski.fa
 
 
 

@@ -52,7 +52,7 @@ savefile=`basename -s fake $outfile`
 cat $outfile | tr '\t' '\n' > $savefile
 
 # count the number of unique sequences and write to a new file
-savefile2= $savefile"_uniq_seqs" 
+savefile2=$savefile"_uniq_seqs" 
 cut -f2 $outfile | sort | grep '[ATGC]' | uniq | wc -l > $savefile2
 
 # after you run this then write the top 100 lines to a new file

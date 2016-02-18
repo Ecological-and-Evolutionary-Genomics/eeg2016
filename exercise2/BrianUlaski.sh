@@ -51,16 +51,12 @@ savefile=`basename -s fake $outfile`
 # to separate fake-fasta files back into real-fasta files use tr to replace tab characters with newline characters
 cat $outfile | tr '\t' '\n' > $savefile
 
-# remove outfile
-# rm $outfile
-
-######count the number of unique sequences and write to a new file ###pico/nano
-savefile2=$savefile"seqs.uniq.fa" 
+# count the number of unique sequences and write to a new file
+savefile2= $savefile"_uniq_seqs" 
 cut -f2 $outfile | sort | grep '[ATGC]' | uniq | wc -l > $savefile2
-  ##answer=45324#
 
-####### after you run this then write the top 100 lines to a new file
-head -n 100 $savefile > BrianUlaski.fa
+# after you run this then write the top 100 lines to a new file
+head -n 100 $savefile2 > BrianUlaski.fa
 
 
 

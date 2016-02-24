@@ -78,7 +78,9 @@ screen.seqs(fasta=stability.trim.contigs.good.unique.align, count=stability.trim
 summary.seqs(fasta=current, count=current)
 
 # remove duplicated bottom line (BUG) e.g. in bash
+# use Ctrl-Z to suspend mothur
 # uniq stability.trim.contigs.good.good.count_table > tmp; mv tmp stability.trim.contigs.good.good.count_table
+# use 'fg' to return to mothur
 
 #filter sequences to remove any bases that don't match the reference database
 
@@ -101,4 +103,4 @@ remove.seqs(fasta=stability.trim.contigs.good.unique.good.filter.unique.preclust
 
 classify.seqs(fasta=stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.fasta, count=stability.trim.contigs.good.unique.good.filter.unique.precluster.uchime.pick.count_table, reference=trainset9_032012.pds.fasta, taxonomy=trainset9_032012.pds.tax, cutoff=80)
 
-#finally, upload the summary file 
+#finally, commit the summary file 

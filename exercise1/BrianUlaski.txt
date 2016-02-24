@@ -21,7 +21,7 @@ head ex1.txt
 wc -l ex1.txt
 
 # 7. Sort 'ex1.txt' by sequence identifier and save the output to a new file called 'seqs.sort.fa'.
-sort -n ex1.txt >> seqs.sort.fa
+sort -n ex1.txt > seqs.sort.fa
 
 # 8. The syntax to read 'file.txt' line by line and do something with each line is shown below. 
 # This example echoes, or prints out, each line, followed by a blank line, and appends each to 
@@ -52,7 +52,7 @@ done < seqs.nonblank.fa
 
 # 10. Count the number of unique DNA sequences in the file 'seqs.uniq.fa' and output 
 # the value to a file in your home directory called 'ex1-answer.txt'.
-wc -l < seqs.uniq.fa >> /home/brian/ex1-answer.txt
+wc -l < seqs.uniq.fa > /home/brian/ex1-answer.txt
 
 # 11. Delete all of the files that have names beginning with 'seqs'.
 rm seqs*.*

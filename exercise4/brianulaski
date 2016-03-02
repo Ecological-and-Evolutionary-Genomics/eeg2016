@@ -6,6 +6,9 @@ HOMEWORK #4
 mkdir ~/exercise4
 cd ~/exercise4
 
+# Copy fastq file into new directory
+cp ~/exercise2/SRR1145846_S1_L001_R1_001.fastq ~/exercise4/
+
 # make a soft link to the metagenomic data from Exercise 2
 
 ln -s ~/exercise2/SRR1145846_S1_L001_R1_001.fastq ./

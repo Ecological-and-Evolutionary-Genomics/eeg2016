@@ -29,7 +29,7 @@ tar xzf diamond-linux64.tar.gzAMOND
 ./diamond makedb --in uniprot_sprot.fasta -d uniprot_sprot
 
 # this is the DIAMOND-equivalent of running BLASTX 
-./diamond blastx -d uniprot_sprot -q SRR1145846_S1_L001_R1_001.fastq -a diamond_output -e 1e-30
+./diamond blastx -d uniprot_sprot -q SRR1145846_S1_L001_R1_001.fastq -a diamond_output -e 1e-10
 
 # DIAMOND outputs its results to its own compressed format
 # to get results in a BLAST-equivalent format use the `view` command

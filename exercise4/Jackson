@@ -1,0 +1,44 @@
+#Make the directory
+mkdir ~/exercise4
+
+#Change Directory
+cd exercise4
+
+# download the Swiss-Prot database by ftp
+wget ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz
+
+# unzip file
+gunzip uniprot_sprot.fasta.gz
+
+#make a BLAST-formatted version of the Swiss-Prot database
+#the -parse_seqids flag is necessary if you later want to search the database by sequence identifier
+makeblastdb -in uniprot_sprot.fasta -out uniprot_sprot -dbtype prot -hash_index -parse_seqids
+
+#Use code from exercise 2 to create FASTQ file for analysis
+
+#initiate blast query search
+blastx -query SRR1145846_S1_L001_R1_001.fasta -db uniprot_sprot -out blastx_output.csv -outfmt 6 &
+
+#alllow to process to ensure it is working then quit function to compare BLAST to DIAMOND
+
+#download Diamond and unzip
+wget http://github.com/bbuchfink/diamond/releases/download/v0.7.11/diamond-linux64.tar.gz
+tar xzf diamond-linux64.tar.gzAMOND
+
+# make a DIAMOND-formatted version of the Swiss-Prot database
+./diamond makedb --in uniprot_sprot.fasta -d uniprot_sprot
+
+# this is the DIAMOND-equivalent of running BLASTX 
+./diamond blastx -d uniprot_sprot -q SRR1145846_S1_L001_R1_001.fastq -a diamond_output -e 1e-10
+
+# DIAMOND outputs its results to its own compressed format
+# to get results in a BLAST-equivalent format use the `view` command
+./diamond view -a diamond_output.daa -o diamond_output.csv
+
+# cut out the second column and save it into a new file
+cut -f2 diamond_output.csv > diamond_acc.txt
+
+#run `blastdbcmd` with the -entry_batch command to tell it you'll be giving it a list of accessions
+#the -outputfmt flag tells it to output just the annotation for each matching sequence
+blastdbcmd -db uniprot_sprot -entry_batch diamond_acc.txt -out diamond_output.txt -outfmt '%t'
+

@@ -1,0 +1,76 @@
+# make a new directory for Exercise 4 and go there
+
+mkdir ~/exercise4
+cd ~/exercise4
+
+# make a soft link to the metagenomic data from Exercise 2
+
+ln -s ~/exercise2/SRR1145846_S1_L001_R1_001.fastq ./
+
+# download the Swiss-Prot database by ftp, about 70Mb  
+
+wget ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz  
+
+# unzip the file  
+
+gunzip uniprot_sprot.fasta.gz  
+
+# make a BLAST-formatted version of the Swiss-Prot database, should take less than a minute
+# the -parse_seqids flag is necessary if you later want to search the database by sequence identifier (you do)
+
+makeblastdb -in uniprot_sprot.fasta -out uniprot_sprot -dbtype prot -hash_index -parse_seqids  
+
+# I copied the fasta file from exercise2 to exercise4 folder using the following command
+
+cp SRR1145846_S1_L001_R1_001.fasta /home/manager/EEG2016/Exercise4/
+
+# This command runs blastX
+# in BLAST parlance, the 'query' is the sequence you want to identify
+# while 'subject' is a sequence in the reference database
+# the ampersand (&) at the end of the line tells bash to put the command into the background, 
+# the same as doing Ctrl-Z and typing 'bg'. To bring it back into the foreground type 'fg'
+
+blastx -query SRR1145846_S1_L001_R1_001.fasta -db uniprot_sprot -out blastx_output.csv -outfmt 6 &    
+
+
+#See what the output file looks like
+$head blastx_output.csv                                               [ 7:46PM]
+SN100_1_B02LVACXX_1_1101_5714_4288_1_N_0_1	sp|Q9QU30|CAPSD_TTVB1	51.11	45	22	0	149	15	423	467	3e-09	55.5
+SN100_1_B02LVACXX_1_1101_5714_4288_1_N_0_1	sp|Q0AJ68|TRMB_NITEC	40.00	40	21	1	137	18	168	204	0.28	31.6
+SN100_1_B02LVACXX_1_1101_5714_4288_1_N_0_1	sp|P40256|PRIO_PONPY	37.14	35	20	1	116	18	135	169	3.8	28.1
+SN100_1_B02LVACXX_1_1101_5714_4288_1_N_0_1	sp|P67986|PRIO_CEREN	32.50	40	25	1	116	3	138	177	4.8	27.7
+SN100_1_B02LVACXX_1_1101_5714_4288_1_N_0_1	sp|P67987|PRIO_CEREL	32.50	40	25	1	116	3	138	177	4.8	27.7
+SN100_1_B02LVACXX_1_1101_5714_4288_1_N_0_1	sp|B0FYL5|PRIO_VULLA	34.29	35	21	1	116	18	139	173	6.5	27.3
+SN100_1_B02LVACXX_1_1101_5714_4288_1_N_0_1	sp|P40258|PRIO_SAISC	34.29	35	21	1	116	18	142	176	6.8	27.3
+SN100_1_B02LVACXX_1_1101_5714_4288_1_N_0_1	sp|P79141|PRIO_CAMDR	34.29	35	21	1	116	18	138	172	7.1	27.3
+SN100_1_B02LVACXX_1_1101_5714_4288_1_N_0_1	sp|P23907|PRIO_SHEEP	34.29	35	21	1	116	18	138	172	7.8	27.3
+SN100_1_B02LVACXX_1_1101_5714_4288_1_N_0_1	sp|P49927|PRIO_PIG	34.29	35	21	1	116	18	139	173	7.9	27.3
+
+# download DIAMOND from github
+wget http://github.com/bbuchfink/diamond/releases/download/v0.7.11/diamond-linux64.tar.gz
+tar xzf diamond-linux64.tar.gz
+
+# make a DIAMOND-formatted version of the Swiss-Prot database, should take a minute or two  
+
+./diamond makedb --in uniprot_sprot.fasta -d uniprot_sprot
+
+# this is the DIAMOND-equivalent of running BLASTX  
+./diamond blastx -d uniprot_sprot -q SRR1145846_S1_L001_R1_001.fastq -a diamond_output
+
+# DIAMOND outputs its results to its own compressed format
+# to get results in a BLAST-equivalent format use the `view` command
+
+./diamond view -a diamond_output.daa -o diamond_output.csv
+
+head diamond_output.csv 
+SN100:1:B02LVACXX:1:1101:5714:4288	sp|Q9QU30|CAPSD_TTVB1	51.1	45	22	0	149	15	423	467	3.6e-09	61.2
+SN100:1:B02LVACXX:1:1101:9965:445	sp|Q8V7G3|CAPSD_TTVV7	83.7	49	80	1	147	230	278	2.9e-19	94.7
+SN100:1:B02LVACXX:1:1101:9965:445	sp|Q914N0|CAPSD_TTVV4	55.3	47	21	0	1	141	227	273	3.8e-11	67.8
+SN100:1:B02LVACXX:1:1101:9965:445	sp|A7XCE4|CAPSD_TTVV3	55.1	49	22	0	1	147	228	276	3.2e-10	64.7
+SN100:1:B02LVACXX:1:1101:9965:445	sp|Q9DUC9|CAPSD_TTVV8	49.0	49	25	0	1	147	227	275	3.6e-09	61.2
+SN100:1:B02LVACXX:1:1101:40:1339	sp|Q9QU30|CAPSD_TTVB1	51.0	49	24	0	149	3	407	455	7.6e-12	70.1
+SN100:1:B02LVACXX:1:1101:3143:5489	sp|Q9QU30|CAPSD_TTVB1	70.0	50	15	0	151	2	503	552	7.5e-15	80.1
+SN100:1:B02LVACXX:1:1101:3143:5489	sp|Q9QU29|ORF3_TTVB1	75.9	29	70	87	1	1	29	3.8e-06	51.2
+SN100:1:B02LVACXX:1:1101:1784:1194	sp|Q9QU30|CAPSD_TTVB1	51.3	39	19	0	4	120	429	467	9.9e-07	53.1
+SN100:1:B02LVACXX:1:1101:4557:1649	sp|Q9QU30|CAPSD_TTVB1	48.7	39	20	0	4	120	429	467	2.2e-06	52.0
+

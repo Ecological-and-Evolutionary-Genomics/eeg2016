@@ -20,3 +20,12 @@ sed 's/@/>/;s/:/_/g;N;s/\n/ /;/+/d;s/1_N_0_1//g' SRR1145846_S1_L001_R1_001.fastq
 #so you can add it to big script above or do separately:
 sed 's/  /control+v (press tab)/g' SRR1145846_S1_L001_R1_001.fake.fasta > SRR1145846_S1_L001_R1_001.faketab.fasta #(first /  / = two spaces)
 
+# Or you can do this:
+sed 's/  */\'$'\t/g' SRR1145846_S1_L001_R1_001.fake.fasta > SRR1145846_S1_L001_R1_001.fake_tab.fasta
+#\'$'\t = workaround for tab issues in mac descirbed above
+
+#tried this next one for the newline and didn't work so I used the transliterate code below
+#sed 's/\'$'t/'$'\n/g' SRR1145846_S1_L001_R1_001.fake_tab.fasta > SRR1145846_S1_L001_R1_001A.fasta
+
+#yay convert fake fasta to fasta by adding newline where tab is 
+tr ''$'\t' ''$'\n' < SRR1145846_S1_L001_R1_001.fake_tab.fasta > SRR1145846_S1_L001_R1_001A.fasta

@@ -1,0 +1,1266 @@
+makecontigs.pbs
+#!/bin/bash
+#PBS -q standard_16
+#PBS -l walltime=48:00:00
+#PBS -l nodes=4:ppn=16
+#PBS -j oe
+#PBS -m e
+#PBS -M cpkasanke@alaska.edu
+cd $PBS_O_WORKDIR
+module load mothur/1.35.1.nompi
+mothur "#make.contigs(file=stability.files, processors=16)"
+
+Total of all groups is 33070130
+
+Output File Names:
+stability.trim.contigs.fasta
+stability.contigs.qual
+stability.contigs.report
+stability.scrap.contigs.fasta
+stability.scrap.contigs.qual
+stability.contigs.groups
+
+
+summary.seqs
+#!/bin/bash
+#PBS -q standard_16
+#PBS -l walltime=48:00:00
+#PBS -l nodes=4:ppn=16
+#PBS -j oe
+#PBS -m e
+#PBS -M cpkasanke@alaska.edu
+cd $PBS_O_WORKDIR
+module load mothur/1.35.1.nompi
+mothur "#summary.seqs(fasta=stability.trim.contigs.fasta, processors=16)"
+
+Using 16 processors.
+
+                Start   End     NBases  Ambigs  Polymer NumSeqs
+Minimum:        1       241     241     0       3       1
+2.5%-tile:      1       252     252     0       3       826754
+25%-tile:       1       253     253     0       4       8267533
+Median:         1       253     253     0       5       16535066
+75%-tile:       1       253     253     0       6       24802598
+97.5%-tile:     1       264     264     9       6       32243377
+Maximum:        1       500     500     113     250     33070130
+Mean:   1       256.505 256.505 0.914029        4.86067
+# of Seqs:      33070130
+Output File Names:
+stability.trim.contigs.summary
+
+It took 278 secs to summarize 33070130 sequences.
+
+
+
+ScreenUniqueCountSummary.pbs
+#!/bin/bash
+#PBS -q standard_16
+#PBS -l walltime=48:00:00
+#PBS -l nodes=4:ppn=16
+#PBS -j oe
+#PBS -m e
+#PBS -M cpkasanke@alaska.edu
+cd $PBS_O_WORKDIR
+module load mothur/1.35.1.nompi
+mothur "#screen.seqs(fasta=stability.trim.contigs.fasta, group=stability.contigs.groups, maxambig=0, maxlength=275, processors=16); unique.seqs(fasta=stability.trim.contigs.good.fasta); count.seqs(name=stability.trim.contigs.good.names, group=stability.contigs.good.groups); summary.seqs(count=stability.trim.contigs.good.count_table)"
+
+OUTPUT:  
+Using 16 processors.
+
+Output File Names:
+stability.trim.contigs.good.fasta
+stability.trim.contigs.bad.accnos
+stability.contigs.good.groups
+
+
+It took 1018 secs to screen 33070130 sequences.
+
+
+mothur > unique.seqs(fasta=stability.trim.contigs.good.fasta)
+24516196        4704712
+
+
+Output File Names:
+stability.trim.contigs.good.names
+stability.trim.contigs.good.unique.fasta
+
+
+mothur > count.seqs(name=stability.trim.contigs.good.names, group=stability.contigs.good.groups)
+
+Using 16 processors.
+It took 290 secs to create a table for 24516196 sequences.
+
+
+Total number of sequences: 24516196
+
+Output File Names:
+stability.trim.contigs.good.count_table
+
+mothur > summary.seqs(count=stability.trim.contigs.good.count_table)
+
+Using stability.trim.contigs.good.unique.fasta as input file for the fasta parameter.
+
+Using 16 processors.
+
+                Start   End     NBases  Ambigs  Polymer NumSeqs
+Minimum:        1       242     242     0       3       1
+2.5%-tile:      1       252     252     0       3       612905
+25%-tile:       1       253     253     0       4       6129050
+Median:         1       253     253     0       5       12258099
+75%-tile:       1       253     253     0       5       18387148
+97.5%-tile:     1       254     254     0       6       23903292
+Maximum:        1       275     275     0       47      24516196
+Mean:   1       253.113 253.113 0       4.74696
+# of unique seqs:       4704712
+total # of seqs:        24516196
+
+Output File Names:
+stability.trim.contigs.good.unique.summary
+
+It took 128 secs to summarize 24516196 sequences.
+
+align.pbs
+#!/bin/bash
+#PBS -q standard_16
+#PBS -l walltime=48:00:00
+#PBS -l nodes=4:ppn=16
+#PBS -j oe
+#PBS -m e
+#PBS -M cpkasanke@alaska.edu
+cd $PBS_O_WORKDIR
+module load mothur/1.35.1.nompi
+mothur "#align.seqs(fasta=stability.trim.contigs.good.unique.fasta, reference=silva.seed_v119.align, flip=t, processors=16); summary.seqs(fasta=stability.trim.contigs.good.unique.align, count=stability.trim.contigs.good.count_table)"
+
+
+Using 16 processors.
+
+Reading in the silva.seed_v119.align template sequences...      DONE.
+It took 38 to read  15009 sequences.
+Aligning sequences from stability.trim.contigs.good.unique.fasta ...
+Some of you sequences generated alignments that eliminated too many bases, a list is provided in stability.trim.contigs.good.unique.flip.accnos. If the reverse compliment proved to be better it was reported.
+It took 9314 secs to align 4704712 sequences.
+
+
+Output File Names:
+stability.trim.contigs.good.unique.align
+stability.trim.contigs.good.unique.align.report
+stability.trim.contigs.good.unique.flip.accnos
+
+
+
+
+
+#Insert summary seqs step here!! (done after the fact) Tells where most sequences start and end according to allignment
+#Should be quick so I'll run it as an interactive job
+
+qsub -q bio -I
+
+mothur > summary.seqs(fasta=stability.trim.contigs.good.unique.align, count=stability.trim.contigs.good.count_table, processors=16)
+
+#Not that quick-submitting it as a batch job
+
+summary.pbs
+#!/bin/bash
+#PBS -q bio
+#PBS -l walltime=48:00:00
+#PBS -l nodes=1:ppn=32
+#PBS -j oe
+#PBS -m e
+#PBS -M cpkasanke@alaska.edu
+cd $PBS_O_WORKDIR
+module load mothur/1.35.1.nompi
+mothur "#summary.seqs(fasta=stability.trim.contigs.good.unique.align, count=stability.trim.contigs.good.count_table, processors=32)"
+
+
+
+
+screenseqs.pbs
+#!/bin/bash
+#PBS -q standard_16
+#PBS -l walltime=48:00:00
+#PBS -l nodes=4:ppn=16
+#PBS -j oe
+#PBS -m e
+#PBS -M cpkasanke@alaska.edu
+cd $PBS_O_WORKDIR
+module load mothur/1.35.1.nompi
+mothur "#screen.seqs(fasta=stability.trim.contigs.good.unique.align, count=stability.trim.contigs.good.count_table, summary=stability.trim.contigs.good.unique.summary, start=13862, end=23444, maxhomop=8, processors=32); filter.seqs(fasta=stability.trim.contigs.good.unique.good.align, vertical=T, trump=.)"
+
+
+Using 32 processors.
+
+Output File Names:
+stability.trim.contigs.good.unique.good.summary
+stability.trim.contigs.good.unique.good.align
+stability.trim.contigs.good.unique.bad.accnos
+stability.trim.contigs.good.good.count_table
+
+
+Using 32 processors.
+Creating Filter...
+
+
+Running Filter...
+
+
+
+Length of filtered alignment: 687
+Number of columns removed: 49313
+Length of the original alignment: 50000
+Number of sequences used to construct filter: 4633459
+
+Output File Names:
+stability.filter
+stability.trim.contigs.good.unique.good.filter.fasta
+
+uniqueprecluster.pbs
+#!/bin/bash
+#PBS -q standard_16
+#PBS -l walltime=48:00:00
+#PBS -l nodes=4:ppn=16
+#PBS -j oe
+#PBS -m e
+#PBS -M cpkasanke@alaska.edu
+cd $PBS_O_WORKDIR
+module load mothur/1.35.1.nompi
+mothur "#unique.seqs(fasta=stability.trim.contigs.good.unique.good.filter.fasta, count=stability.trim.contigs.good.good.count_table)"
+
+mothur > unique.seqs(fasta=stability.trim.contigs.good.unique.good.filter.fasta, count=stability.trim.contigs.good.good.count_table)
+4633459 4631041
+
+Output File Names:
+stability.trim.contigs.good.unique.good.filter.count_table
+stability.trim.contigs.good.unique.good.filter.unique.fasta
+
+prefilter.pbs
+#!/bin/bash
+#PBS -q standard_16
+#PBS -l walltime=48:00:00
+#PBS -l nodes=4:ppn=16
+#PBS -j oe
+#PBS -m e
+#PBS -M cpkasanke@alaska.edu
+cd $PBS_O_WORKDIR
+module load mothur/1.35.1.nompi
+mothur "#pre.cluster(fasta=stability.trim.contigs.good.unique.good.filter.unique.fasta, count=stability.trim.contigs.good.unique.good.filter.count_table, diffs=2, processors=32)"
+
+
+Cant use more than one node due to internal computer reasons. Trying to run it on the Bio nodes and got code from Oralee
+Note:  Still only using one node from #PBS -l nodes=1:ppn=32, but the bio nodes still allow me to use 32 processors.  If I used one node on the standard_16 I can only use 16 processors.
+
+Bioprefilter.pbs
+#!/bin/bash
+#PBS -q bio
+#PBS -l walltime=48:00:00
+#PBS -l nodes=1:ppn=32
+#PBS -j oe
+#PBS -m e
+#PBS -M cpkasanke@alaska.edu
+cd $PBS_O_WORKDIR
+module load mothur/1.35.1.nompi
+mothur "#pre.cluster(fasta=stability.trim.contigs.good.unique.good.filter.unique.fasta, count=stability.trim.contigs.good.unique.good.filter.count_table, diffs=2, processors=32)"
+
+
+Output File Names:
+stability.trim.contigs.good.unique.good.filter.unique.precluster.fasta
+stability.trim.contigs.good.unique.good.filter.unique.precluster.count_table
+stability.trim.contigs.good.unique.good.filter.unique.precluster.1_11_Final.map
+stability.trim.contigs.good.unique.good.filter.unique.precluster.1_16_Final.map
+stability.trim.contigs.good.unique.good.filter.unique.precluster.1_2_Final.map
+stability.trim.contigs.good.unique.good.filter.unique.precluster.1_9_Final.map
+stability.trim.contigs.good.unique.good.filter.unique.precluster.3_17_Final.map
+stability.trim.contigs.good.unique.good.filter.unique.precluster.3_18_Final.map
+stability.trim.contigs.good.unique.good.filter.unique.precluster.3_19_Final.map
+stability.trim.contigs.good.unique.good.filter.unique.precluster.3_1_Final.map
+.....and many more .map files (one for every sample (221))
+
+splitabund.pbs
+#!/bin/bash
+#PBS -q bio
+#PBS -l walltime=48:00:00
+#PBS -l nodes=1:ppn=32
+#PBS -j oe
+#PBS -m e
+#PBS -M cpkasanke@alaska.edu
+cd $PBS_O_WORKDIR
+module load mothur/1.35.1.nompi
+mothur "#split.abund(fasta=stability.trim.contigs.good.unique.good.filter.unique.precluster.fasta, count=stability.trim.contigs.good.unique.good.filter.unique.precluster.count_table, cutoff=1, accnos=true)"
+
+Output File Names:
+stability.trim.contigs.good.unique.good.filter.unique.precluster.rare.count_table
+stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.count_table
+rare.accnos
+abund.accnos
+stability.trim.contigs.good.unique.good.filter.unique.precluster.rare.fasta
+stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.fasta
+
+chimera.pbs
+#!/bin/bash
+#PBS -q bio
+#PBS -l walltime=48:00:00
+#PBS -l nodes=1:ppn=32
+#PBS -j oe
+#PBS -m e
+#PBS -M cpkasanke@alaska.edu
+cd $PBS_O_WORKDIR
+module load mothur/1.35.1.nompi
+mothur "#chimera.uchime(fasta=stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.fasta, count=stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.count_table, dereplicate=t, processors=32)"
+
+Output File Names:
+stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.uchime.pick.count_table
+stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.uchime.chimeras
+stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.uchime.accnos
+
+Note:  Above the Output File Names was the output below:
+It took 1043 secs to check 14682 sequences from group MW_156A_15ft_14.
+
+It took 8 secs to check 715 sequences from group MW_156B_50ft_14.
+
+It took 1 secs to check 142 sequences from group MW_159A_15ft_13.  *****WTF Only 142 sequences?! or only 142 sequences removed?
+
+It took 1 secs to check 181 sequences from group MW_159C_70ft_13.
+
+It took 127 secs to check 4369 sequences from group MW_161A_15ft_13.
+
+It took 466 secs to check 9202 sequences from group PW_445657_14.
+
+It took 489 secs to check 9457 sequences from group MW_304_15ft_13.
+
+It took 1 secs to check 200 sequences from group MW_304_70ft_13.
+
+It took 851 secs to check 12829 sequences from group PW_563579_14.
+
+It took 1039 secs to check 13384 sequences from group MW_318_20ft_13.
+
+IS THIS NORMAL!!??  GOING TO CONTINUE AND ASK LATER
+
+remove.pbs
+#!/bin/bash
+#PBS -q bio
+#PBS -l walltime=48:00:00
+#PBS -l nodes=1:ppn=32
+#PBS -j oe
+#PBS -m e
+#PBS -M cpkasanke@alaska.edu
+cd $PBS_O_WORKDIR
+module load mothur/1.35.1.nompi
+mothur "#remove.seqs(fasta=stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.fasta, accnos=stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.uchime.accnos, dups=f)"
+
+Removed 341782 sequences from your fasta file.
+
+Output File Names:
+stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.pick.fasta
+
+summary.pbs
+#!/bin/bash
+#PBS -q bio
+#PBS -l walltime=48:00:00
+#PBS -l nodes=1:ppn=32
+#PBS -j oe
+#PBS -m e
+#PBS -M cpkasanke@alaska.edu
+cd $PBS_O_WORKDIR
+module load mothur/1.35.1.nompi
+mothur "#summary.seqs(fasta=stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.pick.fasta, count=stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.count_table)"
+
+
+Using 1 processors.
+
+                Start   End     NBases  Ambigs  Polymer NumSeqs
+Minimum:        1       686     218     0       3       1
+2.5%-tile:      1       687     252     0       4       576618
+25%-tile:       1       687     253     0       4       5766179
+Median:         1       687     253     0       5       11532357
+75%-tile:       1       687     253     0       6       17298535
+97.5%-tile:     3       687     275     0       8       22488095
+Maximum:        3       687     275     0       8       23064712
+Mean:   0.94613 649.986 239.467 0       4.49021
+# of unique seqs:       419055
+total # of seqs:        23064712
+
+Output File Names:
+stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.pick.summary
+
+It took 48 secs to summarize 23064712 sequences.
+
+
+Classify.pbs
+#!/bin/bash
+#PBS -q bio
+#PBS -l walltime=48:00:00
+#PBS -l nodes=1:ppn=32
+#PBS -j oe
+#PBS -m e
+#PBS -M cpkasanke@alaska.edu
+cd $PBS_O_WORKDIR
+module load mothur/1.35.1.nompi
+mothur "#classify.seqs(fasta=stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.pick.fasta, count=stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.uchime.pick.count_table, reference=silva.seed_v119.align, taxonomy=silva.seed_v119.tax, cutoff=80, processors=32)"
+
+It took 331 secs to classify 419055 sequences.
+
+It took 77 secs to create the summary file for 419055 sequences.
+
+Output File Names:
+stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.pick.seed_v119.wang.taxonomy
+stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.pick.seed_v119.wang.tax.summary
+
+
+
+#!/bin/bash
+#PBS -q bio
+#PBS -l walltime=48:00:00
+#PBS -l nodes=1:ppn=32
+#PBS -j oe
+#PBS -m e
+#PBS -M cpkasanke@alaska.edu
+cd $PBS_O_WORKDIR
+module load mothur/1.35.1.nompi
+mothur "#remove.lineage(fasta=stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.pick.fasta, count=stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.uchime.pick.count_table, taxonomy=stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.pick.seed_v119.wang.taxonomy, taxon=Chloroplast-Mitochondria-unknown-Eukaryota)"
+[NOTE]: The count file should contain only unique names, so mothur assumes your fasta, list and taxonomy files also contain only uniques.
+
+
+Output File Names:
+stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.pick.seed_v119.wang.pick.taxonomy
+stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.pick.pick.fasta
+stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.uchime.pick.pick.count_table
+
+dist.pbs
+#!/bin/bash
+#PBS -q bio
+#PBS -l walltime=48:00:00
+#PBS -l nodes=1:ppn=32
+#PBS -j oe
+#PBS -m e
+#PBS -M cpkasanke@alaska.edu
+cd $PBS_O_WORKDIR
+module load mothur/1.35.1.nompi
+mothur "#dist.seqs(fasta=stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.pick.pick.fasta, cutoff=0.20, processors=32)"
+
+
+Using 32 processors.
+
+Output File Names:
+stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.pick.pick.dist
+
+It took 123797 seconds to calculate the distances for 401769 sequences.
+
+
+#!/bin/bash
+#PBS -q bio
+#PBS -l walltime=720:00:00
+#PBS -l nodes=1:ppn=32
+#PBS -j oe
+#PBS -m e
+#PBS -M cpkasanke@alaska.edu
+cd $PBS_O_WORKDIR
+module load mothur/1.35.1.nompi
+mothur "#cluster.split(fasta=stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.pick.pick.fasta, count=stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.uchime.pick.pick.count_table, taxonomy=stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.pick.seed_v119.wang.pick.taxonomy, splitmethod=classify, taxlevel=4, cutoff=0.15, processors=32)"
+
+Output File Names:
+stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.pick.pick.an.unique_list.list
+
+
+
+makeshared.pbs
+#!/bin/bash
+#PBS -q bio
+#PBS -l walltime=720:00:00
+#PBS -l nodes=1:ppn=32
+#PBS -j oe
+#PBS -m e
+#PBS -M cpkasanke@alaska.edu
+cd $PBS_O_WORKDIR
+module load mothur/1.35.1.nompi
+mothur "#make.shared(list=stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.pick.pick.an.unique_list.list, count=stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.uchime.pick.pick.count_table, label=0.03)"
+
+Output File Names:
+stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.pick.pick.an.unique_list.shared
+stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.pick.pick.an.unique_list.1_11_Final.rabund
+stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.pick.pick.an.unique_list.1_16_Final.rabund
+stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.pick.pick.an.unique_list.1_2_Final.rabund
+......and many more .rabund files......
+
+qsub -q standard_16 -I
+
+
+system(cp stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.pick.pick.an.unique_list.shared final.shared)
+
+
+count.groups(shared=final.shared)
+
+
+mothur > count.groups(shared=final.shared)
+1_11_Final contains 68621.
+1_16_Final contains 60737.
+1_2_Final contains 75750.
+1_9_Final contains 41016.
+3_17_Final contains 84743.
+3_18_Final contains 78272.
+3_19_Final contains 58430.
+3_1_Final contains 57944.
+3_20_Final contains 47702.
+3_21_Final contains 65121.
+3_22_Final contains 82571.
+3_2_Final contains 69765.
+3_3_Final contains 60051.
+3_6_Final contains 62810.
+3_7_Final contains 54174.
+3_8_Final contains 67278.
+5gram contains 75761.
+8_10_Final contains 94298.
+8_12_Final contains 48244.
+8_1_Final contains 89316.
+8_21_Final contains 102928.
+8_24_Final contains 77587.
+8_2_Final contains 108077.
+9_10_Final contains 84832.
+9_11_Final contains 87702.
+9_1_Final contains 68999.
+9_2_Final contains 82886.
+9_4_Final contains 66378.
+9_5_Final contains 51577.
+9_7_Final contains 58971.
+9_8_Final contains 54675.
+AS1_10 contains 51737.
+AS1_13 contains 127988.
+AS2_10 contains 76840.
+AS2_13 contains 113825.
+AS3_10 contains 93834.
+AS3_13 contains 74235.
+AS4_10 contains 99260.
+AS4_13 contains 67204.
+AS5_10 contains 165477.
+AS5_13 contains 80661.
+AS6_13 contains 88870.
+AS7_10 contains 143142.
+AS7_13 contains 90344.
+AS8_13 contains 120381.
+AS_MW_1_OU contains 50346.
+AS_MW_2_OU contains 64459.
+AS_MW_3_OU contains 80785.
+AS_MW_4_OU contains 44794.
+AS_MW_5_OU contains 68756.
+AS_MW_6_OU contains 76398.
+AS_MW_6_wk10 contains 51626.
+AS_MW_7_OU contains 71538.
+AS_MW_8_OU contains 71845.
+AS_MW_8_wk10 contains 78292.
+Expt1_T0_1 contains 36554.
+Expt1_T0_2 contains 48806.
+GACclean1 contains 60194.
+GACclean2 contains 141211.
+GACd21 contains 155431.
+GACd22 contains 170751.
+GACd31 contains 219546.
+GACd32 contains 263541.
+GACd41 contains 182822.
+GACd42 contains 166993.
+MW_133_20ft_13 contains 128358.
+MW_147B_25ft_13 contains 103617.
+MW_148A_15ft_13 contains 76331.
+MW_148A_15ft_14 contains 98805.
+MW_148C_55ft_13 contains 107482.
+MW_148D_150ft_13 contains 34885.
+MW_148D_150ft_14 contains 109649.
+MW_150C_60ft_13 contains 49304.
+MW_151A_15ft_14 contains 86045.
+MW_151C_60ft_14 contains 81056.
+MW_152A_15ft_13 contains 108784.
+MW_153A_15ft_13 contains 89607.
+MW_153B_55ft_13 contains 113890.
+MW_154A_75ft_13 contains 108458.
+MW_154B_95ft_13 contains 142278.
+MW_155A_15ft_13 contains 86083.
+MW_155B_65ft_13 contains 8205.
+MW_156A_15ft_13 contains 151260.
+MW_156A_15ft_14 contains 91653.
+MW_156B_50ft_14 contains 157757.
+MW_159A_15ft_13 contains 34389.
+MW_159C_70ft_13 contains 29865.
+MW_161A_15ft_13 contains 86691.
+MW_161B_13 contains 46389.
+MW_161B_50ft_13 contains 99410.
+MW_162A_15ft_13 contains 83271.
+MW_162B_65ft_13 contains 96145.
+MW_164A_15ft_13 contains 135348.
+MW_164A_15ft_13x2 contains 91347.
+MW_164C_60ft_13 contains 76706.
+MW_165A_15ft_13 contains 129979.
+MW_165B_50ft_13 contains 50542.
+MW_166A_15ft_13 contains 180226.
+MW_166B_30ft_13 contains 122882.
+MW_167_B_13 contains 89885.
+MW_169A_15ft_13 contains 82201.
+MW_169C_60ft_13 contains 81751.
+MW_170A_15ft_13 contains 92076.
+MW_170A_15ft_14 contains 74095.
+MW_170B_75ft_13 contains 27570.
+MW_170B_75ft_14 contains 114880.
+MW_170C_130ft_13 contains 35330.
+MW_170C_130ft_14 contains 109588.
+MW_170D_50ft_13 contains 122237.
+MW_170D_50ft_14 contains 108554.
+MW_171A_15ft_13 contains 82234.
+MW_171B_40ft_13 contains 87371.
+MW_173A_15ft_13 contains 134373.
+MW_173B_150ft_13 contains 174573.
+MW_176A_15ft_13 contains 169891.
+MW_176C_90ft_13 contains 106869.
+MW_180A_15ft_13 contains 136450.
+MW_180C_90ft_13 contains 18976.
+MW_181_B_13 contains 89006.
+MW_181_C_13 contains 79955.
+MW_183A_15ft_13 contains 95527.
+MW_183B_60ft_13 contains 48037.
+MW_185A_15ft_13 contains 88480.
+MW_185A_15ft_14 contains 110906.
+MW_185B_50ft_14 contains 126265.
+MW_186A_14ft_13 contains 100090.
+MW_186D_135ft_13 contains 130443.
+MW_186E_75ft_13 contains 46982.
+MW_191A_15ft_13 contains 109470.
+MW_191A_15ft_14 contains 79554.
+MW_191B_60ft_13 contains 108613.
+MW_191B_60ft_14 contains 81503.
+MW_192A_15ft_13 contains 106378.
+MW_192B_55ft_13 contains 63801.
+MW_193B_60ft_13 contains 85614.
+MW_194A_15ft_13 contains 79805.
+MW_194B_40ft_13 contains 83956.
+MW_195A_15ft_13 contains 86280.
+MW_195B_150ft_13 contains 46209.
+MW_196_13 contains 83616.
+MW_199_150ft_13 contains 133388.
+MW_301_70ft_13 contains 121170.
+MW_301_CMT_20ft_13 contains 67435.
+MW_302_110ft_13 contains 55884.
+MW_302_110ft_14 contains 153290.
+MW_302_CMT_20ft_13 contains 122191.
+MW_302_CMT_30ft_14 contains 145982.
+MW_302_CMT_50ft_13 contains 89734.
+MW_302_CMT_50ft_14 contains 156968.
+MW_303_130ft_13 contains 49141.
+MW_303_130ft_14 contains 63990.
+MW_303_CMT_19ft_13 contains 120167.
+MW_303_CMT_19ft_14 contains 101633.
+MW_303_CMT_49ft_13 contains 112090.
+MW_303_CMT_49ft_14 contains 101372.
+MW_304_150ft_13 contains 146878.
+MW_304_15ft_13 contains 130621.
+MW_304_70ft_13 contains 49100.
+MW_305_100ft_13 contains 43791.
+MW_305_CMT_18ft_13 contains 158091.
+MW_305_CMT_18ft_14 contains 120093.
+MW_305_CMT_48ft_13 contains 129286.
+MW_306_150ft_13 contains 31393.
+MW_306_15ft_13 contains 119054.
+MW_306_80ft_13 contains 40195.
+MW_312_15ft_13 contains 90222.
+MW_312_50ft_13 contains 91671.
+MW_313_150ft_13 contains 119616.
+MW_313_15ft_13 contains 72523.
+MW_314_150ft_13 contains 176659.
+MW_314_15ft_13 contains 38584.
+MW_315_150ft_13 contains 116260.
+MW_315_15ft_13 contains 81004.
+MW_317_15ft_13 contains 115280.
+MW_317_71ft_13 contains 169973.
+MW_318_135ft_13 contains 37329.
+MW_318_20ft_13 contains 132015.
+MW_322_150ft_13 contains 93352.
+MW_322_15ft_13 contains 84771.
+MW_324_150ft_13 contains 128973.
+MW_324_15ft_13 contains 87066.
+MW_325_150ft_13 contains 37237.
+MW_325_18ft_13 contains 161994.
+MW_327_150ft_13 contains 130213.
+MW_327_15ft_13 contains 122233.
+MW_328_151ft_13 contains 97768.
+MW_328_15ft_13 contains 16939.
+MW_329_15ft_13 contains 103396.
+MW_332_150ft_14 contains 133114.
+MW_332_15ft_14 contains 103529.
+PW_0161A_14 contains 89033.
+PW_0161D_14 contains 78278.
+PW_0217A_14 contains 108378.
+PW_0217D_14 contains 108589.
+PW_0511A_14 contains 96306.
+PW_0511D3_14 contains 113494.
+PW_0607A_14 contains 92325.
+PW_0607D_14 contains 119819.
+PW_1095A_14 contains 92712.
+PW_1095B_14 contains 105427.
+PW_1095C1_14 contains 138686.
+PW_1095D_14 contains 115501.
+PW_1100A_14 contains 98283.
+PW_1100D_14 contains 76913.
+PW_1230GW1_14 contains 61232.
+PW_1230GW2_14 contains 82784.
+PW_290190_14 contains 103064.
+PW_296937_13 contains 113897.
+PW_296937_lawn_13 contains 107589.
+PW_301671_13 contains 127456.
+PW_302032_13 contains 146551.
+PW_315192_14 contains 98567.
+PW_315206_13 contains 97768.
+PW_315290_13 contains 114093.
+PW_315290_14 contains 114560.
+PW_333883_13 contains 104230.
+PW_391565_14 contains 126123.
+PW_395200_14 contains 143761.
+PW_429929_13 contains 108395.
+PW_445657_14 contains 97274.
+PW_563579_14 contains 95647.
+
+Total seqs: 21043186.
+
+Output File Names:
+final.count.summary
+
+
+sub.sample(shared=final.shared)
+Sampling 8205 from each group.
+0.03
+
+Output File Names:
+final.0.03.subsample.shared
+
+classify.otu.pbs
+#!/bin/bash
+#PBS -q bio
+#PBS -l walltime=720:00:00
+#PBS -l nodes=1:ppn=32
+#PBS -j oe
+#PBS -m e
+#PBS -M cpkasanke@alaska.edu
+cd $PBS_O_WORKDIR
+module load mothur/1.35.1.nompi
+mothur "#classify.otu(list=stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.pick.pick.an.unique_list.list, count=stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.uchime.pick.pick.count_table, taxonomy=stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.pick.seed_v119.wang.pick.taxonomy, label=0.03)"
+
+reftaxonomy is not required, but if given will keep the rankIDs in the summary file static.
+0.03    94861
+
+Output File Names:
+stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.pick.pick.an.unique_list.0.03.cons.taxonomy
+stability.trim.contigs.good.unique.good.filter.unique.precluster.abund.pick.pick.an.unique_list.0.03.cons.tax.summary
+
+NOTE: Above file is the OTU number and taxonomic classification for every OTU-that is, not the subsampled set. 
+
+
+To get a diversity indices:
+mothur > collect.single(shared=final.shared, calc=chao-invsimpson, freq=100)
+
+Output File Names:
+final.1_11_Final.chao
+final.1_11_Final.invsimpson
+final.1_16_Final.chao
+final.1_16_Final.invsimpson
+final.1_2_Final.chao
+final.1_2_Final.invsimpson
+final.1_9_Final.chao
+final.1_9_Final.invsimpson
+final.3_17_Final.chao
+final.3_17_Final.invsimpson
+final.3_18_Final.chao
+final.3_18_Final.invsimpson
+final.3_19_Final.chao
+final.3_19_Final.invsimpson
+final.3_1_Final.chao
+final.3_1_Final.invsimpson
+final.3_20_Final.chao
+final.3_20_Final.invsimpson
+final.3_21_Final.chao
+final.3_21_Final.invsimpson
+final.3_22_Final.chao
+final.3_22_Final.invsimpson
+final.3_2_Final.chao
+final.3_2_Final.invsimpson
+final.3_3_Final.chao
+final.3_3_Final.invsimpson
+final.3_6_Final.chao
+final.3_6_Final.invsimpson
+final.3_7_Final.chao
+final.3_7_Final.invsimpson
+final.3_8_Final.chao
+final.3_8_Final.invsimpson
+final.5gram.chao
+final.5gram.invsimpson
+final.8_10_Final.chao
+final.8_10_Final.invsimpson
+final.8_12_Final.chao
+final.8_12_Final.invsimpson
+final.8_1_Final.chao
+final.8_1_Final.invsimpson
+final.8_21_Final.chao
+final.8_21_Final.invsimpson
+final.8_24_Final.chao
+final.8_24_Final.invsimpson
+final.8_2_Final.chao
+final.8_2_Final.invsimpson
+final.9_10_Final.chao
+final.9_10_Final.invsimpson
+final.9_11_Final.chao
+final.9_11_Final.invsimpson
+final.9_1_Final.chao
+final.9_1_Final.invsimpson
+final.9_2_Final.chao
+final.9_2_Final.invsimpson
+final.9_4_Final.chao
+final.9_4_Final.invsimpson
+final.9_5_Final.chao
+final.9_5_Final.invsimpson
+final.9_7_Final.chao
+final.9_7_Final.invsimpson
+final.9_8_Final.chao
+final.9_8_Final.invsimpson
+final.AS1_10.chao
+final.AS1_10.invsimpson
+final.AS1_13.chao
+final.AS1_13.invsimpson
+final.AS2_10.chao
+final.AS2_10.invsimpson
+final.AS2_13.chao
+final.AS2_13.invsimpson
+final.AS3_10.chao
+final.AS3_10.invsimpson
+final.AS3_13.chao
+final.AS3_13.invsimpson
+final.AS4_10.chao
+final.AS4_10.invsimpson
+final.AS4_13.chao
+final.AS4_13.invsimpson
+final.AS5_10.chao
+final.AS5_10.invsimpson
+final.AS5_13.chao
+final.AS5_13.invsimpson
+final.AS6_13.chao
+final.AS6_13.invsimpson
+final.AS7_10.chao
+final.AS7_10.invsimpson
+final.AS7_13.chao
+final.AS7_13.invsimpson
+final.AS8_13.chao
+final.AS8_13.invsimpson
+final.AS_MW_1_OU.chao
+final.AS_MW_1_OU.invsimpson
+final.AS_MW_2_OU.chao
+final.AS_MW_2_OU.invsimpson
+final.AS_MW_3_OU.chao
+final.AS_MW_3_OU.invsimpson
+final.AS_MW_4_OU.chao
+final.AS_MW_4_OU.invsimpson
+final.AS_MW_5_OU.chao
+final.AS_MW_5_OU.invsimpson
+final.AS_MW_6_OU.chao
+final.AS_MW_6_OU.invsimpson
+final.AS_MW_6_wk10.chao
+final.AS_MW_6_wk10.invsimpson
+final.AS_MW_7_OU.chao
+final.AS_MW_7_OU.invsimpson
+final.AS_MW_8_OU.chao
+final.AS_MW_8_OU.invsimpson
+final.AS_MW_8_wk10.chao
+final.AS_MW_8_wk10.invsimpson
+final.Expt1_T0_1.chao
+final.Expt1_T0_1.invsimpson
+final.Expt1_T0_2.chao
+final.Expt1_T0_2.invsimpson
+final.GACclean1.chao
+final.GACclean1.invsimpson
+final.GACclean2.chao
+final.GACclean2.invsimpson
+final.GACd21.chao
+final.GACd21.invsimpson
+final.GACd22.chao
+final.GACd22.invsimpson
+final.GACd31.chao
+final.GACd31.invsimpson
+final.GACd32.chao
+final.GACd32.invsimpson
+final.GACd41.chao
+final.GACd41.invsimpson
+final.GACd42.chao
+final.GACd42.invsimpson
+final.MW_133_20ft_13.chao
+final.MW_133_20ft_13.invsimpson
+final.MW_147B_25ft_13.chao
+final.MW_147B_25ft_13.invsimpson
+final.MW_148A_15ft_13.chao
+final.MW_148A_15ft_13.invsimpson
+final.MW_148A_15ft_14.chao
+final.MW_148A_15ft_14.invsimpson
+final.MW_148C_55ft_13.chao
+final.MW_148C_55ft_13.invsimpson
+final.MW_148D_150ft_13.chao
+final.MW_148D_150ft_13.invsimpson
+final.MW_148D_150ft_14.chao
+final.MW_148D_150ft_14.invsimpson
+final.MW_150C_60ft_13.chao
+final.MW_150C_60ft_13.invsimpson
+final.MW_151A_15ft_14.chao
+final.MW_151A_15ft_14.invsimpson
+final.MW_151C_60ft_14.chao
+final.MW_151C_60ft_14.invsimpson
+final.MW_152A_15ft_13.chao
+final.MW_152A_15ft_13.invsimpson
+final.MW_153A_15ft_13.chao
+final.MW_153A_15ft_13.invsimpson
+final.MW_153B_55ft_13.chao
+final.MW_153B_55ft_13.invsimpson
+final.MW_154A_75ft_13.chao
+final.MW_154A_75ft_13.invsimpson
+final.MW_154B_95ft_13.chao
+final.MW_154B_95ft_13.invsimpson
+final.MW_155A_15ft_13.chao
+final.MW_155A_15ft_13.invsimpson
+final.MW_155B_65ft_13.chao
+final.MW_155B_65ft_13.invsimpson
+final.MW_156A_15ft_13.chao
+final.MW_156A_15ft_13.invsimpson
+final.MW_156A_15ft_14.chao
+final.MW_156A_15ft_14.invsimpson
+final.MW_156B_50ft_14.chao
+final.MW_156B_50ft_14.invsimpson
+final.MW_159A_15ft_13.chao
+final.MW_159A_15ft_13.invsimpson
+final.MW_159C_70ft_13.chao
+final.MW_159C_70ft_13.invsimpson
+final.MW_161A_15ft_13.chao
+final.MW_161A_15ft_13.invsimpson
+final.MW_161B_13.chao
+final.MW_161B_13.invsimpson
+final.MW_161B_50ft_13.chao
+final.MW_161B_50ft_13.invsimpson
+final.MW_162A_15ft_13.chao
+final.MW_162A_15ft_13.invsimpson
+final.MW_162B_65ft_13.chao
+final.MW_162B_65ft_13.invsimpson
+final.MW_164A_15ft_13.chao
+final.MW_164A_15ft_13.invsimpson
+final.MW_164A_15ft_13x2.chao
+final.MW_164A_15ft_13x2.invsimpson
+final.MW_164C_60ft_13.chao
+final.MW_164C_60ft_13.invsimpson
+final.MW_165A_15ft_13.chao
+final.MW_165A_15ft_13.invsimpson
+final.MW_165B_50ft_13.chao
+final.MW_165B_50ft_13.invsimpson
+final.MW_166A_15ft_13.chao
+final.MW_166A_15ft_13.invsimpson
+final.MW_166B_30ft_13.chao
+final.MW_166B_30ft_13.invsimpson
+final.MW_167_B_13.chao
+final.MW_167_B_13.invsimpson
+final.MW_169A_15ft_13.chao
+final.MW_169A_15ft_13.invsimpson
+final.MW_169C_60ft_13.chao
+final.MW_169C_60ft_13.invsimpson
+final.MW_170A_15ft_13.chao
+final.MW_170A_15ft_13.invsimpson
+final.MW_170A_15ft_14.chao
+final.MW_170A_15ft_14.invsimpson
+final.MW_170B_75ft_13.chao
+final.MW_170B_75ft_13.invsimpson
+final.MW_170B_75ft_14.chao
+final.MW_170B_75ft_14.invsimpson
+final.MW_170C_130ft_13.chao
+final.MW_170C_130ft_13.invsimpson
+final.MW_170C_130ft_14.chao
+final.MW_170C_130ft_14.invsimpson
+final.MW_170D_50ft_13.chao
+final.MW_170D_50ft_13.invsimpson
+final.MW_170D_50ft_14.chao
+final.MW_170D_50ft_14.invsimpson
+final.MW_171A_15ft_13.chao
+final.MW_171A_15ft_13.invsimpson
+final.MW_171B_40ft_13.chao
+final.MW_171B_40ft_13.invsimpson
+final.MW_173A_15ft_13.chao
+final.MW_173A_15ft_13.invsimpson
+final.MW_173B_150ft_13.chao
+final.MW_173B_150ft_13.invsimpson
+final.MW_176A_15ft_13.chao
+final.MW_176A_15ft_13.invsimpson
+final.MW_176C_90ft_13.chao
+final.MW_176C_90ft_13.invsimpson
+final.MW_180A_15ft_13.chao
+final.MW_180A_15ft_13.invsimpson
+final.MW_180C_90ft_13.chao
+final.MW_180C_90ft_13.invsimpson
+final.MW_181_B_13.chao
+final.MW_181_B_13.invsimpson
+final.MW_181_C_13.chao
+final.MW_181_C_13.invsimpson
+final.MW_183A_15ft_13.chao
+final.MW_183A_15ft_13.invsimpson
+final.MW_183B_60ft_13.chao
+final.MW_183B_60ft_13.invsimpson
+final.MW_185A_15ft_13.chao
+final.MW_185A_15ft_13.invsimpson
+final.MW_185A_15ft_14.chao
+final.MW_185A_15ft_14.invsimpson
+final.MW_185B_50ft_14.chao
+final.MW_185B_50ft_14.invsimpson
+final.MW_186A_14ft_13.chao
+final.MW_186A_14ft_13.invsimpson
+final.MW_186D_135ft_13.chao
+final.MW_186D_135ft_13.invsimpson
+final.MW_186E_75ft_13.chao
+final.MW_186E_75ft_13.invsimpson
+final.MW_191A_15ft_13.chao
+final.MW_191A_15ft_13.invsimpson
+final.MW_191A_15ft_14.chao
+final.MW_191A_15ft_14.invsimpson
+final.MW_191B_60ft_13.chao
+final.MW_191B_60ft_13.invsimpson
+final.MW_191B_60ft_14.chao
+final.MW_191B_60ft_14.invsimpson
+final.MW_192A_15ft_13.chao
+final.MW_192A_15ft_13.invsimpson
+final.MW_192B_55ft_13.chao
+final.MW_192B_55ft_13.invsimpson
+final.MW_193B_60ft_13.chao
+final.MW_193B_60ft_13.invsimpson
+final.MW_194A_15ft_13.chao
+final.MW_194A_15ft_13.invsimpson
+final.MW_194B_40ft_13.chao
+final.MW_194B_40ft_13.invsimpson
+final.MW_195A_15ft_13.chao
+final.MW_195A_15ft_13.invsimpson
+final.MW_195B_150ft_13.chao
+final.MW_195B_150ft_13.invsimpson
+final.MW_196_13.chao
+final.MW_196_13.invsimpson
+final.MW_199_150ft_13.chao
+final.MW_199_150ft_13.invsimpson
+final.MW_301_70ft_13.chao
+final.MW_301_70ft_13.invsimpson
+final.MW_301_CMT_20ft_13.chao
+final.MW_301_CMT_20ft_13.invsimpson
+final.MW_302_110ft_13.chao
+final.MW_302_110ft_13.invsimpson
+final.MW_302_110ft_14.chao
+final.MW_302_110ft_14.invsimpson
+final.MW_302_CMT_20ft_13.chao
+final.MW_302_CMT_20ft_13.invsimpson
+final.MW_302_CMT_30ft_14.chao
+final.MW_302_CMT_30ft_14.invsimpson
+final.MW_302_CMT_50ft_13.chao
+final.MW_302_CMT_50ft_13.invsimpson
+final.MW_302_CMT_50ft_14.chao
+final.MW_302_CMT_50ft_14.invsimpson
+final.MW_303_130ft_13.chao
+final.MW_303_130ft_13.invsimpson
+final.MW_303_130ft_14.chao
+final.MW_303_130ft_14.invsimpson
+final.MW_303_CMT_19ft_13.chao
+final.MW_303_CMT_19ft_13.invsimpson
+final.MW_303_CMT_19ft_14.chao
+final.MW_303_CMT_19ft_14.invsimpson
+final.MW_303_CMT_49ft_13.chao
+final.MW_303_CMT_49ft_13.invsimpson
+final.MW_303_CMT_49ft_14.chao
+final.MW_303_CMT_49ft_14.invsimpson
+final.MW_304_150ft_13.chao
+final.MW_304_150ft_13.invsimpson
+final.MW_304_15ft_13.chao
+final.MW_304_15ft_13.invsimpson
+final.MW_304_70ft_13.chao
+final.MW_304_70ft_13.invsimpson
+final.MW_305_100ft_13.chao
+final.MW_305_100ft_13.invsimpson
+final.MW_305_CMT_18ft_13.chao
+final.MW_305_CMT_18ft_13.invsimpson
+final.MW_305_CMT_18ft_14.chao
+final.MW_305_CMT_18ft_14.invsimpson
+final.MW_305_CMT_48ft_13.chao
+final.MW_305_CMT_48ft_13.invsimpson
+final.MW_306_150ft_13.chao
+final.MW_306_150ft_13.invsimpson
+final.MW_306_15ft_13.chao
+final.MW_306_15ft_13.invsimpson
+final.MW_306_80ft_13.chao
+final.MW_306_80ft_13.invsimpson
+final.MW_312_15ft_13.chao
+final.MW_312_15ft_13.invsimpson
+final.MW_312_50ft_13.chao
+final.MW_312_50ft_13.invsimpson
+final.MW_313_150ft_13.chao
+final.MW_313_150ft_13.invsimpson
+final.MW_313_15ft_13.chao
+final.MW_313_15ft_13.invsimpson
+final.MW_314_150ft_13.chao
+final.MW_314_150ft_13.invsimpson
+final.MW_314_15ft_13.chao
+final.MW_314_15ft_13.invsimpson
+final.MW_315_150ft_13.chao
+final.MW_315_150ft_13.invsimpson
+final.MW_315_15ft_13.chao
+final.MW_315_15ft_13.invsimpson
+final.MW_317_15ft_13.chao
+final.MW_317_15ft_13.invsimpson
+final.MW_317_71ft_13.chao
+final.MW_317_71ft_13.invsimpson
+final.MW_318_135ft_13.chao
+final.MW_318_135ft_13.invsimpson
+final.MW_318_20ft_13.chao
+final.MW_318_20ft_13.invsimpson
+final.MW_322_150ft_13.chao
+final.MW_322_150ft_13.invsimpson
+final.MW_322_15ft_13.chao
+final.MW_322_15ft_13.invsimpson
+final.MW_324_150ft_13.chao
+final.MW_324_150ft_13.invsimpson
+final.MW_324_15ft_13.chao
+final.MW_324_15ft_13.invsimpson
+final.MW_325_150ft_13.chao
+final.MW_325_150ft_13.invsimpson
+final.MW_325_18ft_13.chao
+final.MW_325_18ft_13.invsimpson
+final.MW_327_150ft_13.chao
+final.MW_327_150ft_13.invsimpson
+final.MW_327_15ft_13.chao
+final.MW_327_15ft_13.invsimpson
+final.MW_328_151ft_13.chao
+final.MW_328_151ft_13.invsimpson
+final.MW_328_15ft_13.chao
+final.MW_328_15ft_13.invsimpson
+final.MW_329_15ft_13.chao
+final.MW_329_15ft_13.invsimpson
+final.MW_332_150ft_14.chao
+final.MW_332_150ft_14.invsimpson
+final.MW_332_15ft_14.chao
+final.MW_332_15ft_14.invsimpson
+final.PW_0161A_14.chao
+final.PW_0161A_14.invsimpson
+final.PW_0161D_14.chao
+final.PW_0161D_14.invsimpson
+final.PW_0217A_14.chao
+final.PW_0217A_14.invsimpson
+final.PW_0217D_14.chao
+final.PW_0217D_14.invsimpson
+final.PW_0511A_14.chao
+final.PW_0511A_14.invsimpson
+final.PW_0511D3_14.chao
+final.PW_0511D3_14.invsimpson
+final.PW_0607A_14.chao
+final.PW_0607A_14.invsimpson
+final.PW_0607D_14.chao
+final.PW_0607D_14.invsimpson
+final.PW_1095A_14.chao
+final.PW_1095A_14.invsimpson
+final.PW_1095B_14.chao
+final.PW_1095B_14.invsimpson
+final.PW_1095C1_14.chao
+final.PW_1095C1_14.invsimpson
+final.PW_1095D_14.chao
+final.PW_1095D_14.invsimpson
+final.PW_1100A_14.chao
+final.PW_1100A_14.invsimpson
+final.PW_1100D_14.chao
+final.PW_1100D_14.invsimpson
+final.PW_1230GW1_14.chao
+final.PW_1230GW1_14.invsimpson
+final.PW_1230GW2_14.chao
+final.PW_1230GW2_14.invsimpson
+final.PW_290190_14.chao
+final.PW_290190_14.invsimpson
+final.PW_296937_13.chao
+final.PW_296937_13.invsimpson
+final.PW_296937_lawn_13.chao
+final.PW_296937_lawn_13.invsimpson
+final.PW_301671_13.chao
+final.PW_301671_13.invsimpson
+final.PW_302032_13.chao
+final.PW_302032_13.invsimpson
+final.PW_315192_14.chao
+final.PW_315192_14.invsimpson
+final.PW_315206_13.chao
+final.PW_315206_13.invsimpson
+final.PW_315290_13.chao
+final.PW_315290_13.invsimpson
+final.PW_315290_14.chao
+final.PW_315290_14.invsimpson
+final.PW_333883_13.chao
+final.PW_333883_13.invsimpson
+final.PW_391565_14.chao
+final.PW_391565_14.invsimpson
+final.PW_395200_14.chao
+final.PW_395200_14.invsimpson
+final.PW_429929_13.chao
+final.PW_429929_13.invsimpson
+final.PW_445657_14.chao
+final.PW_445657_14.invsimpson
+final.PW_563579_14.chao
+final.PW_563579_14.invsimpson
+
+To make a rarefaction curve:
+mothur > rarefaction.single(shared=final.shared, calc=sobs, freq=100)
+
+Output File Names:
+final.groups.rarefaction
+
+# We should use diversity estimates based on subsampled data as estimates are influenced by depth of sequencing
+final.0.03.subsample.shared
+mothur > collect.single(shared=final.0.03.subsample.shared, calc=chao-invsimpson, freq=100)
+Output:
+final.0.03.subsample.PW_315290_13.chao
+final.0.03.subsample.PW_315290_13.invsimpson
+final.0.03.subsample.PW_315290_14.chao
+final.0.03.subsample.PW_315290_14.invsimpson
+final.0.03.subsample.PW_333883_13.chao
+final.0.03.subsample.PW_333883_13.invsimpson
+final.0.03.subsample.PW_391565_14.chao
+final.0.03.subsample.PW_391565_14.invsimpson
+final.0.03.subsample.PW_395200_14.chao
+final.0.03.subsample.PW_395200_14.invsimpson
+final.0.03.subsample.PW_429929_13.chao
+final.0.03.subsample.PW_429929_13.invsimpson
+final.0.03.subsample.PW_445657_14.chao
+final.0.03.subsample.PW_445657_14.invsimpson
+final.0.03.subsample.PW_563579_14.chao
+final.0.03.subsample.PW_563579_14.invsimpson
+....for every sample.......
+
+#Attempting to get unifrac distances for statistical comparisons
+# calculate the similarity of the membership and structure found in the various samples. 
+# We'll do this with the dist.shared command that will allow us to rarefy our data to a common number of sequences, 8205 for this dataset 
+# Gives Jaccard and thetayc coefficients
+
+dist.shared.pbs
+#!/bin/bash
+#PBS -q bio
+#PBS -l walltime=720:00:00
+#PBS -l nodes=1:ppn=32
+#PBS -j oe
+#PBS -m e
+#PBS -M cpkasanke@alaska.edu
+cd $PBS_O_WORKDIR
+module load mothur/1.35.1.nompi
+mothur "#dist.shared(shared=final.shared, calc=thetayc-jclass, subsample=8205)"
+
+Using 1 processors.
+0.03
+
+Output File Names:
+final.thetayc.0.03.lt.dist
+final.jclass.0.03.lt.dist
+final.thetayc.0.03.lt.ave.dist
+final.thetayc.0.03.lt.std.dist
+final.jclass.0.03.lt.ave.dist
+final.jclass.0.03.lt.std.dist
+
+make.tree.pbs
+#!/bin/bash
+#PBS -q bio
+#PBS -l walltime=720:00:00
+#PBS -l nodes=1:ppn=32
+#PBS -j oe
+#PBS -m e
+#PBS -M cpkasanke@alaska.edu
+cd $PBS_O_WORKDIR
+module load mothur/1.35.1.nompi
+mothur "#tree.shared(phylip=final.thetayc.0.03.lt.ave.dist)"
+Output file:
+final.thetayc.0.03.lt.ave.tre
+# After running this I am not sure it is useful.  I will try to generate the unifrac distance in R.

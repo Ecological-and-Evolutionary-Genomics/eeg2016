@@ -5,3 +5,12 @@ Results so far:
 # comaprison against basespace database
 	52621 sequences; 832 classified (1.55%)
 
+Data table from Base Space results: (note, none for custom database comparison as all sequences were unclassified)
+Taxonomic Level 	Reads Classified to Taxonomic Level 	% Reads Classified to Taxonomic Level
+Domain* 	816 	1.55%
+Phylum 	335 	0.64%
+Class 	333 	0.63%
+Order 	328 	0.62%
+Family 	798 	1.52%
+Genus 	777 	1.48%
+Species 	565 	1.07%

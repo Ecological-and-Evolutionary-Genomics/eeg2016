@@ -1,0 +1,14 @@
+Results:
+1) Custom database
+62 sequences classified 		  (0.12%)
+52559 sequences unclassified 	(99.88%)
+
+2) MiniKraken database
+832 sequences classified 		  (1.58%)
+51789 sequences unclassified  (98.42%)
+335 sequences classified to Phylum 	(0.64%)
+333 sequences classified to Class 	(0.63%)
+328 sequences classified to Order 	(0.62%)
+798 sequences classified to Family 	(1.52%)
+777 sequences classified to Genus 	(1.48%)
+565 sequences classified to Species (1.07%)

@@ -1,2 +1,25 @@
 >NODE_18+_length_255_cov_36.4219
 TTAAAACACAGAAAGATTTCATTAAATATGTAGAACAAAATTGCCAAGAAAATCATAATCAATTCTTTATTGAAAAAGGAGGAATTAAGGCTGGTATTGGTATAGAAGTAGAAGCTGAATGCAAAACCCCTAAACCTGCAAAAACCAATCAAACCCCTATCCAGCCAAAACACCTCCCAAACTCTAAACAACCCCGCTCTCAAAGAGGATCAAAAGCGCAAGAGCTTATCGCTTATTTGCAAAAAGAGCTAGAAT
+
+
+Best Blast Hits. All of the following were 100% match for Helicobacter pylori
+ Helicobacter pylori strain 26695-1MET, complete genome
+	472 	2057 	100% 	2e-129	100% 	CP010436.1
+
+	Helicobacter pylori 26695-1CL DNA, complete genome
+	472 	2057 	100% 	2e-129	100% 	AP013356.1
+
+	Helicobacter pylori 26695-1CH DNA, complete genome
+	472 	2057 	100% 	2e-129	100% 	AP013355.1
+
+	Helicobacter pylori 26695-1 DNA, complete genome
+	472 	2057 	100% 	2e-129	100% 	AP013354.1
+
+	Helicobacter pylori Rif2, complete genome
+	472 	2057 	100% 	2e-129	100% 	CP003906.1
+
+	Helicobacter pylori Rif1, complete genome
+	472 	2057 	100% 	2e-129	100% 	CP003905.1
+
+	Helicobacter pylori 26695, complete genome
+	472 	2057 	100% 	2e-129	100% 	CP003904.1

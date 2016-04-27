@@ -17,6 +17,7 @@ grep -c '>' fish_mito.fasta
 echo "reverse	TAGAACAGGCTCCTCTAG" > oligos.txt
 echo "forward	TTAGATACCCCACTATGC" >> oligos.txt
 
+
 # run pcr.seqs in mothur to trim fish mito sequences based on primers used for amplicon sequencing
 ./mothur "#pcr.seqs(fasta=fish_mito.fasta, oligos=oligos.txt, pdiffs=2)"
 
@@ -24,8 +25,10 @@ echo "forward	TTAGATACCCCACTATGC" >> oligos.txt
 grep -c '>' fish_mito.pcr.fasta
 2011
 
+# align in clustalo
+clustalo -i fish_mito.pcr.fasta -o fish_mito.pcr.aln
+
 # open in seaview
-# align using clustalo
 # clean up alignment/remove bad sequences
 # all sequences need to be the same length, including gaps
 

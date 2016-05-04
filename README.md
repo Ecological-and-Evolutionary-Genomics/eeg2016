@@ -1,7 +1,8 @@
 ### This is the course website for Ecological and Evolutionary Genomics 2016
-### Taught by Eric Collins (@rec3141), Assistant Professor of Biological Oceanography at the University of Alaska Fairbanks
 
-### We are using GitHub as a repository for code developed in class and for background material related to the class.
+#### The course is taught by Eric Collins (@rec3141), Assistant Professor of Biological Oceanography at the University of Alaska Fairbanks
+
+#### We are using GitHub as a repository for code developed in class and for background material related to the class.
 
 ### Bash shell and command line environment
 - using BioLinux  

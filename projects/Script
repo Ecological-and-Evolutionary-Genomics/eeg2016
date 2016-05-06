@@ -1,0 +1,48 @@
+Trimmomatic
+
+#remove forward and reverse primers from paired end reads
+#R1 and R2 input files
+#output files
+#remove leading low quality bases (below quality 15)
+#remove trailing low quality bases (below quality 15)
+#scan the read with a 4-base wide sliding window, cutting with the average quality per base drops below 20
+#drop reads below 30 bases long
+
+java -jar trimmomatic-0.35.jar PE -phred33 12s_R1.fq.gz 12s_R2.fq.gz 12s_R1_trim.fq.gz 12s_R2_trim.fq.gz 12s_forward_unpaired.fq.gz 12s_reverse_unpaired.fq.gz ILLUMINACLIP:12S-PE.fa:2:30:10 LEADING:15 TRAILING:15 SLIDINGWINDOW:4:20 MINLEN:30 
+
+PEAR (Paired-End rEad meRger)
+ 
+#merge paired end reads
+#minimum overlap of 15 bp
+#maximum length after merger 110 bp
+#minimum length after merger 65 bp
+
+-f 12s_R1_trim.fq.gz -r 12s_R2_trim.fq.gz -o 12s_trim_pear -v 15 -m 110 -n 65
+
+VSEARCH (Quality Filter)
+#sort sequences by length
+#dereplicate sequences so that one sequence represents all remaining identical sequences
+#sort by the abundance (i.e., size) of the dereplicated sequences
+#cluster the sequences to a specific identity threshold (96% in this case) representative of OTUs
+#check for and/or remove chimeras
+#Now I have my final representative sequences
+--sortbylength 12s_trim_pear.fasta --output 12s_trim_pear_sbl.fasta
+--derep_fulllength 12s_trim_pear_sbl.fasta --output 12s_trim_pear_sbl_derep.fasta --sizein --sizeout
+--sortbysize 12s_trim_pear_sbl_derep.fasta --output 12s_trim_pear_sbl_derep_sbs.fasta
+--cluster_fast 12s_trim_pear_sbl_derep_sbs.fasta --id 0.96 --centroids 12s_trim_pear_sbl_derep_sbs_clust.fasta
+--uchime_denovo 12s_trim_pear_sbl_derep_sbs_clust.fasta --nonchimeras 12s_trim_pear_sbl_derep_sbs_clust_chim.fasta
+--sortbysize 12s_trim_pear_sbl_derep_sbs_clust_chim.fasta --output 12s_trim_pear_sbl_derep_sbs_clust_chim_sbs.fasta
+
+Make Blast Database
+makeblastdb -in 12s_reflib.fasta -dbtype nucl -out myreflib
+
+Blastn
+#specify database
+#outputs XML format
+#parses the gi and reference number into tabular columns
+blastn -db myreflib -query 12s_trim_pear_sbl_derep_sbs_clust_chim_sbs.fasta -out 12s_megan 
+-outfmt 5 -parse_deflines
+
+
+
+

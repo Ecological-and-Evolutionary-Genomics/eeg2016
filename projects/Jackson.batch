@@ -1,0 +1,14 @@
+pcr.seqs(fasta=silva.bacteria.fasta, start=11894, end=25319, keepdots=F)
+system(mv silva.bacteria.pcr.fasta silva.v4.fasta)
+
+#change the name of the fasta from yourfile.fasta to whatever suits your study
+screen.seqs(fasta=yourfile.fasta, maxambig=0, maxlength=450)
+unique.seqs()
+count.seqs(name=current)
+align.seqs(fasta=current, reference=silva.v4.fasta)
+screen.seqs(fasta=current, count=current, start=1, end=13424, maxhomop=8)
+filter.seqs(fasta=current, vertical=T, trump=.)
+unique.seqs(fasta=current, count=current)
+pre.cluster(fasta=current, count=current, diffs=2)
+classify.seqs(fasta=current, count=current, reference=silva.bacteria.fasta, taxonomy=silva.bacteria.silva.tax, cutoff=80)
+

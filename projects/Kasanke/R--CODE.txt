@@ -1,0 +1,212 @@
+Pipeline for analyzing sequence data in R
+
+#The subsampled.shared file and the cons.taxonomy file have different number of OTU'sequence
+#This is due to subsampling one file and not the other.  
+#First we have to remove the extra OTU's from the cons.taxonomy file and merge the two files together
+#I loaded the subsampled.shared file and called it mydata
+#to remove a column called numOtus use the following code
+
+ mydata$numOtus <- NULL
+ 
+ #works using any column name
+  mydata$label <- NULL
+  
+  #Now I want to have my OTU's listed as row names instead of column names
+  
+ tdata <- t(mydata)
+ 
+ #Now export the transposed data and save it on your computer (without renaming the columns)
+ 
+ write.table(tdata, "c:/Users/CPK/Documents/transposed.shared.txt", sep="\t", col.names=F) 
+ 
+ 
+#To merge the taxonomy file and the subsampled.shared file, 
+#Create a list of the subsampled OTU names and label it OTU (from tdata)
+#import and label taxonomy table
+#this code seperates all of the OTU's not in the subsampled .shared file and removes them. 
+
+ 
+subtax <- taxonomy[taxonomy$OTU %in% OTU, ]
+write.table(subtax, "c:/Users/CPK/Documents/subsampled.taxonomy.txt", sep="\t", col.names=F) 
+
+#Then merge the documents
+#Note:  Before doing so convert the taxonomy rows to columns in excell or by other means
+combined <- merge(tdata, subtax, all=FALSE)  
+
+write.table(combined, "c:/Users/CPK/Documents/combined.txt", sep="\t", row.names=F) 
+
+#Then remove all singletons and double-tons for computational reasons
+# The size column has the occurance of each OTU across samples; find it's column number
+
+match("Size",names(combined))
+[1] 223
+
+#It is column 223 so use that information to remove all values in that column that are greater than 2
+
+Statready <- combined[combined[,223]>2,]
+
+#Export to save for later
+write.table(Statready, "c:/Users/CPK/Documents/statready.txt", sep="\t", row.names=F)
+
+
+#Just had an idea for logical argument for removing rare sequences
+# Set a cut-off of relevance (e.g. make up less than 5% of the population to see general trends)
+#Total the Size column in the combined file and determine what is 5% of that.  
+
+sum(subtax$Size)
+20847306
+
+#There are 20847306 individual OTU's total with 94847 Unique OTU's.  Lots of low abundance OTU's.  
+
+#Calculate what would be 0.01% of this and remove all sequences less than this number using the code above
+2084.73
+
+#remove all OTU's from dataset with less than 2085 representatives
+
+Statready <- statready[statready[,223]>2085,]
+
+sum(Statready$Size)
+16171399
+
+#still over 16 million individual OTU's total and with 1140 unique OTU's (AKA Species). I think that should be enough to see some general trends and reduced the data considerably
+write.table(Statready, "c:/Users/Chris/Documents/statready.txt", sep="\t", row.names=F)
+
+#To trim out only the OTU and seperate from Taxonomy
+data <- Statready[,1:222]
+
+#then remove the column name OTU so R doesn't think OTU1, OTU2...are actually row values 
+# I opened this text document in Notepad ++ and deleted it manually.  Couldn't find code.  
+
+#Code for creating a MDS plot.
+
+library(vegan)
+data <- read.table(file.choose(),header=T)
+mdsDATA <- metaMDS(data, distance="bray", k=2)
+plot.mdsDATA <- plot(mdsDATA, display="sites", type="t")
+
+
+#MRPP (Multi Response Permutation Procedure) is a non-parmetric technique to differentiate between Treatment groups
+#Create another column vector of categorical variables that corresponds to sample name in the OTU table
+
+Ex. with Air Sparge data
+dat
+ Otu001135 Otu001136 Otu001137 Otu001138 Otu001139 Otu001140
+AS1_10         0         3         2         0         0         0
+AS1_13         0         0         1         2         0         0
+AS2_10         0         0         0         0         0         0
+AS2_13         0         1         2         1         1         0
+AS3_10         0         0         0         0         0         0
+AS3_13         0         0         0         0         1         0
+
+
+dat.env
+ Treatment WeeK
+1         O    1
+2         O    2
+3         O    1
+4         O    2
+5         O    1
+6         O    2
+
+une.mrpp <- with(dat.env, mrpp(dat, WeeK))
+une.mrpp
+
+Call:
+mrpp(dat = dat, grouping = WeeK) 
+
+Dissimilarity index: euclidean 
+Weights for groups:  n 
+
+Class means and counts:
+
+      1     2     3    
+delta  2688  1313  1011
+n     8     8     8    
+
+Chance corrected within-group agreement A: 0.07557 
+Based on observed delta 1671 and expected delta 1808 
+
+Significance of delta: 0.001 
+Permutation: free
+Number of permutations: 999
+
+#Run on whole data set using sample group as a treatment (ie AS, Wells, Experiment, ..)
+> dat.env=read.table(file.choose(), header=T)
+> une.mrpp <- with(dat.env, mrpp(dat, Group))
+> une.mrpp
+
+Call:
+mrpp(dat = dat, grouping = Group) 
+
+Dissimilarity index: euclidean 
+Weights for groups:  n 
+
+Class means and counts:
+
+      AS    GAC   Microcosm Well 
+delta  1808  3348  1875      2173
+n     24    8     33        156  
+
+Chance corrected within-group agreement A: 0.09544 
+Based on observed delta 2132 and expected delta 2356 
+
+Significance of delta: 0.001 
+Permutation: free
+Number of permutations: 999
+
+#Significant difference in community based on GROUP!!  J
+#Justification to analyze independently
+#Color Datapoints and plot ?...circle groups?...
+
+##HOW TO USE JACCARD DISTANCE, Better than Euclidian
+> une.mrpp <- with(dat.env, mrpp(dat, GROUP, distance="jaccard"))
+> une.mrpp
+
+Call:
+mrpp(dat = dat, grouping = GROUP, distance = "jaccard") 
+
+Dissimilarity index: jaccard 
+Weights for groups:  n 
+
+Class means and counts:
+
+      AS    EXPT 
+delta 0.821 0.781
+n     24    33   
+
+Chance corrected within-group agreement A: 0.07137 
+Based on observed delta 0.7978 and expected delta 0.8591 
+
+Significance of delta: 0.001 
+Permutation: free
+Number of permutations: 999
+
+
+Examples
+
+data(dune)
+data(dune.env)
+dune.mrpp <- mrpp(dune, dune.env$Management)
+dune.mrpp
+
+# Save and change plotting parameters
+def.par <- par(no.readonly = TRUE)
+layout(matrix(1:2,nr=1))
+
+plot(dune.ord <- metaMDS(dune), type="text", display="sites" )
+ordihull(dune.ord, dune.env$Management)
+
+with(dune.mrpp, {
+  fig.dist <- hist(boot.deltas, xlim=range(c(delta,boot.deltas)), 
+                 main="Test of Differences Among Groups")
+  abline(v=delta); 
+  text(delta, 2*mean(fig.dist$counts), adj = -0.5,
+     expression(bold(delta)), cex=1.5 )  }
+)
+par(def.par)
+## meandist
+dune.md <- meandist(vegdist(dune), dune.env$Management)
+dune.md
+summary(dune.md)
+plot(dune.md)
+

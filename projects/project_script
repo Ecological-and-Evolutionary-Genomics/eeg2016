@@ -1,0 +1,43 @@
+# mothur pipeline to work with 16S primers
+
+make.contigs(file=TIBIA_16S_stability.files, processors=8)
+summary.seqs(fasta=TIBIA_16S_stability.trim.contigs.fasta, processors=8)
+screen.seqs(fasta=TIBIA_16S_stability.trim.contigs.fasta, group=TIBIA_16S_stability.contigs.groups, maxambig=0, maxlength=300)
+get.current()
+unique.seqs(fasta=TIBIA_16S_stability.trim.contigs.good.fasta)
+count.seqs(name=TIBIA_16S_stability.trim.contigs.good.names, group=TIBIA_16S_stability.contigs.good.groups)
+summary.seqs(count=TIBIA_16S_stability.trim.contigs.good.count_table)
+
+# modify the SILVA database with known forward and reverse primers --> 16S_primers.oligos
+pcr.seqs(fasta=silva.seed_v123.align, oligos=16S_primers.oligos, keepdots=F, processors=1)
+system(mv silva.seed_v123.pcr.align silva.v4.fasta)
+summary.seqs(fasta=silva.v4.fasta)
+
+# align 16S amplicon sequences with modified SILVA database
+align.seqs(fasta=TIBIA_16S_stability.trim.contigs.good.unique.fasta, reference=silva.v4.fasta)
+summary.seqs(fasta=TIBIA_16S_stability.trim.contigs.good.unique.align, count=TIBIA_16S_stability.trim.contigs.good.count_table, processors=8)
+
+screen.seqs(fasta=TIBIA_16S_stability.trim.contigs.good.unique.align, count=TIBIA_16S_stability.trim.contigs.good.count_table, summary=TIBIA_16S_stability.trim.contigs.good.unique.summary, start=1, end=9583, maxhomop=8, processors=8)
+summary.seqs(fasta=current, count=current)
+filter.seqs(fasta=TIBIA_16S_stability.trim.contigs.good.unique.good.align, vertical=T, trump=.)
+unique.seqs(fasta=TIBIA_16S_stability.trim.contigs.good.unique.good.filter.fasta, count=TIBIA_16S_stability.trim.contigs.good.good.count_table)
+pre.cluster(fasta=TIBIA_16S_stability.trim.contigs.good.unique.good.filter.unique.fasta, count=TIBIA_16S_stability.trim.contigs.good.unique.good.filter.count_table, diffs=2, processors=8)
+chimera.uchime(fasta=TIBIA_16S_stability.trim.contigs.good.unique.good.filter.unique.precluster.fasta, count=TIBIA_16S_stability.trim.contigs.good.unique.good.filter.unique.precluster.count_table, dereplicate=t)
+remove.seqs(fasta=TIBIA_16S_stability.trim.contigs.good.unique.good.filter.unique.precluster.fasta, accnos=TIBIA_16S_stability.trim.contigs.good.unique.good.filter.unique.precluster.denovo.uchime.accnos)
+summary.seqs(fasta=current, count=current)
+
+# classify sequences
+classify.seqs(fasta=TIBIA_16S_stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.fasta, count=TIBIA_16S_stability.trim.contigs.good.unique.good.filter.unique.precluster.denovo.uchime.pick.count_table, reference=trainset9_032012.pds.fasta, taxonomy=trainset9_032012.pds.tax, cutoff=80)
+remove.lineage(fasta=TIBIA_16S_stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.fasta, count=TIBIA_16S_stability.trim.contigs.good.unique.good.filter.unique.precluster.denovo.uchime.pick.count_table, taxonomy=TIBIA_16S_stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wang.taxonomy, taxon=Chloroplast-Mitochondria-unknown-Archaea-Eukaryota)
+
+
+
+
+
+
+
+
+
+
+Status API Training Shop Blog About
+© 2016 GitHub, Inc. Terms Privacy Security Contact Help

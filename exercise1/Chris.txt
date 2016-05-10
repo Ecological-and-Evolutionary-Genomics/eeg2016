@@ -29,16 +29,23 @@ done < seqs.sort.fa
 
 #Output the non-blank lines from seqs.dup.fa and dereplicate them into a new file called seqs.uniq.fa.
 
-while read line; do
-  grep ">" >> seqs.noblank.fa
-done < seqs.dup.fa
+### REC/ THE CONSTRUCT BELOW SEEMS TO SKIP THE FIRST LINE
+### REC/ CAN SIMPLIFY BY JUST USING GREP
+grep '>' seqs.dup.fa > seqs.noblank.fa
 
-while read line; do
- uniq >> seqs.uniq.fa
-done < seqs.noblank.fa
+### REC/ TO USE IT ANYWAY DO THIS:
+#while read line; do
+#  echo $line | grep ">" >> seqs.noblank.fa
+#done < seqs.dup.fa
+
+### REC/ SAME HERE
+uniq seqs.noblank.fa > seqs.uniq.fa
+
+#while read line; do
+# uniq >> seqs.uniq.fa
+#done < seqs.noblank.fa
 
 rm seqs.noblank.fa
-
 
 # Count the number of unique DNA sequences in the file seqs.uniq.fa and output the value to a file in your home directory called ex1-answer.txt.
 
@@ -47,10 +54,10 @@ wc -l seqs.uniq.fa > /home/manager/ex1-answer.txt
 
 #Delete all of the files that have names beginning with seqs.
 
-rm seqs.*
+rm seqs*
 
 # Delete the folder exercise1 and everything remaining inside of it.
 
 cd ..
-rm -r exercise1
+rm -rf exercise1
 

@@ -49,6 +49,8 @@ rm seqs.noblank.fa
 
 # Count the number of unique DNA sequences in the file seqs.uniq.fa and output the value to a file in your home directory called ex1-answer.txt.
 
+### REC/ THIS DOES NOT COUNT THE UNIQUE DNA SEQUENCES, IT COUNTS THE UNIQUE HEADERS
+
 wc -l seqs.uniq.fa > /home/manager/ex1-answer.txt
 
 

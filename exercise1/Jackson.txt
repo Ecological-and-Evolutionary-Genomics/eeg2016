@@ -6,11 +6,15 @@ mkdir exercise1
 
 cd exercise1
 
+### REC/ BEST PRACTICE TO COMMENT EACH LINE OR BLOCK TO REMIND YOU WHAT IT DOES
 wget https://raw.githubusercontent.com/rec3141/eeg2016/master/exercise1/ex1.txt
 
+### REC/ BEST PRACTICE TO COMMENT EACH LINE OR BLOCK TO REMIND YOU WHAT IT DOES
 vim -es '+%print' '+:q!' ex1.txt
 
-wc *.txt | sort -n ex1.txt > seqs.sort.fa
+### REC/ PIPING OUTPUT OF WC INTO SORT DOES NOTHING
+#wc *.txt | 
+sort -n ex1.txt > seqs.sort.fa
 
 while read myline; do
   echo $myline >> seqs.dup.fa
@@ -23,9 +27,13 @@ sort -u seqs.dup.fa > seqs1.uniq.fa
 
 grep . seqs1.uniq.fa > seqs.uniq.fa
 
-cut -f2 seqs.uniq.fa | sort -u | grep '[ATGC]' | uniq | wc -l > ../ex1-answer.txt
+### REC/ UNNECESSARY GREP | UNIQ
+#cut -f2 seqs.uniq.fa | sort -u | grep '[ATGC]' | uniq | wc -l > ../ex1-answer.txt
+cut -f2 seqs.uniq.fa | sort -u | wc -l
 
-rm -f seqs.* | rm -f seqs1.*
+### REC/ PIPING ONE RM INTO ANOTHER IS PROBABLY NOT WHAT YOU MEANT
+#rm -f seqs.* | rm -f seqs1.*
+rm -f seqs* seqs1*
 
 cd ..
 

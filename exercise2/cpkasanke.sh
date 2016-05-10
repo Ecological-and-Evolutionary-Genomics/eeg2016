@@ -39,9 +39,15 @@ paste - - > $outfile
 sort $outfile | \
 
 #trim out only unique sequences and put into file called seqs.uniqu.fa 
-while read line; do
- uniq > seqs.uniq.fa
-done < $outfile 
+### REC/ THIS ISN'T GOING TO DO WHAT YOU WANT IT TO DO BECAUSE IT LOOKS AT EACH LINE SEPARATELY
+### REC/ WHILE UNIQ NEEDS TO LOOK AT THE WHOLE FILE AT ONCE
+
+#while read line; do
+# uniq > seqs.uniq.fa
+#done < $outfile 
+
+### REC/ DO THIS INSTEAD
+uniq $outfile > seqs.uniq.fa
 
 #count the number of lines in the seqs.unique.fa (ie. unique sequences) and outputs to screen  
 wc -l seqs.uniq.fa 

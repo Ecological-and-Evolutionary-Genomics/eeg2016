@@ -93,3 +93,17 @@ SN100:1:B02LVACXX:1:1101:4586:4365	sp|Q054E2|RPOB_LEPBL	96.0	50	20	151	2	1022	10
 SN100:1:B02LVACXX:1:1101:4586:4365	sp|Q72UA8|RPOB_LEPIC	96.0	50	20	151	2	1022	1071	1.4e-21	102.4
 SN100:1:B02LVACXX:1:1101:4586:4365	sp|Q8F0S2|RPOB_LEPIN	96.0	50	20	151	2	1022	1071	1.4e-21	102.4
 
+### REC/ TO GET ANNOTATIONS FOR THESE PROTEINS, NEED TO SEARCH IN BLAST DATABASE
+### REC/ https://github.com/Ecological-and-Evolutionary-Genomics/eeg2016/wiki/Feb-22----Exercise-4-----BLAST-and-DIAMOND
+
+# cut out the second column and save it into a new file
+
+cut -f2 diamond_output.csv > diamond_acc.txt
+
+# run `blastdbcmd` with the -entry_batch command to tell it you'll be giving it a list of accessions
+# otherwise it expects a single identifier
+# the -outputfmt flag tells it to output just the annotation for each matching sequence
+# more details about output formats can be found in `blastdbcmd -help`
+
+blastdbcmd -db uniprot_sprot -entry_batch diamond_acc.txt -out diamond_output.txt -outfmt '%t'
+

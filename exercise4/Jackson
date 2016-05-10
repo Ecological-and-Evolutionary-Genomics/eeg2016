@@ -42,3 +42,4 @@ cut -f2 diamond_output.csv > diamond_acc.txt
 #the -outputfmt flag tells it to output just the annotation for each matching sequence
 blastdbcmd -db uniprot_sprot -entry_batch diamond_acc.txt -out diamond_output.txt -outfmt '%t'
 
+### REC/ NO OUTPUT

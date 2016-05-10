@@ -57,7 +57,11 @@ done < seqs.sort.fa
 
 # 10. Count the number of unique DNA sequences in the file 'seqs.uniq.fa' and output 
 # the value to a file in your home directory called 'ex1-answer.txt'.
+
+### REC/ THIS DOES NOT COUNT THE UNIQUE DNA SEQUENCES, IT COUNTS THE UNIQUE HEADERS
+
 wc -l < seqs.uniq.fa > /home/brian/ex1-answer.txt
+
 
 # 11. Delete all of the files that have names beginning with 'seqs'.
 rm seqs*

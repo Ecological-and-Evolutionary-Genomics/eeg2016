@@ -23,7 +23,7 @@ blastx -query SRR1145846_S1_L001_R1_001.fasta -db uniprot_sprot -out blastx_outp
 
 #download Diamond and unzip
 wget http://github.com/bbuchfink/diamond/releases/download/v0.7.11/diamond-linux64.tar.gz
-tar xzf diamond-linux64.tar.gzAMOND
+tar xzf diamond-linux64.tar.gz
 
 # make a DIAMOND-formatted version of the Swiss-Prot database
 ./diamond makedb --in uniprot_sprot.fasta -d uniprot_sprot

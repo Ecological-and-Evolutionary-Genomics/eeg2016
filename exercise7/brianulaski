@@ -6,3 +6,29 @@ TGATGATTTGAGGGTTAATTATGATGATTTGAGGGTTAATTATGACCGGCTTTTACAAAACGCTTCGCCTTTATTAGAAC
 2. Best BLAST hit:
 
 >gi|749168891|gb|CP010436.1| Helicobacter pylori strain 26695-1MET, complete genome
+
+### REC/ NOT PARTICULARLY USEFUL IF WE WANT TO IDENTIFY THE GENE
+### REC/ TO FIND THE REGION, CLICK THE LINK TO THE BEST HIT, YOU'LL SEE THIS:
+
+Helicobacter pylori strain 26695-1MET, complete genome
+Sequence ID: gb|CP010436.1|Length: 1667303Number of Matches: 9
+Related Information
+Range 1: 389876 to 390007 GenBank Graphics Next Match Previous Match
+Alignment statistics for match #1
+Score	Expect	Identities	Gaps	Strand
+244 bits(132)	2e-61	132/132(100%)	0/132(0%)	Plus/Plus
+Query  1       TGATGATTTGAGGGTTAATTATGATGATTTGAGGGTTAATTATGACCGGCTTTTACAAAA  60
+               ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Sbjct  389876  TGATGATTTGAGGGTTAATTATGATGATTTGAGGGTTAATTATGACCGGCTTTTACAAAA  389935
+
+Query  61      CGCTTCGCCTTTATTAGAACTCTCTCAAAACACCACTTTTAAAATCTATCGCAAAGCTTA  120
+               ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Sbjct  389936  CGCTTCGCCTTTATTAGAACTCTCTCAAAACACCACTTTTAAAATCTATCGCAAAGCTTA  389995
+
+Query  121     TCAAAAATCCTT  132
+               ||||||||||||
+Sbjct  389996  TCAAAAATCCTT  390007
+
+### REC/ CLICK 'GenBank' AND IT WILL TAKE YOU TO THIS PAGE:
+### REC/ http://www.ncbi.nlm.nih.gov/nucleotide/749168891?report=genbank&log$=nuclalign&blast_rank=1&RID=K4W8R24Z015&from=389876&to=390007
+### REC/ WHICH SHOWS THAT IT IS A BEST HIT TO 'fucosyltransferase'

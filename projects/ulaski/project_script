@@ -1,3 +1,7 @@
+### REC/ THIS WOULD BE MORE USEFUL IF COMMENTED TO SAY WHAT EACH STEP DID, AND THE RESULTS OF ECAH STEP
+### REC/ E.G. WHAT WERE THE OUTPUT FILES, HOW MANY SEQUENCES WERE LEFT AFTER EACH STEP, ETC.
+### REC/ CHECK OUT https://github.com/Ecological-and-Evolutionary-Genomics/eeg2016/blob/master/projects/Kasanke/project_code.txt
+
 # mothur pipeline to work with 16S primers
 
 make.contigs(file=TIBIA_16S_stability.files, processors=8)

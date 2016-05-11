@@ -34,3 +34,7 @@ cat $outfile | tr '\t' '\n' > $savefile
 head -n 100 $savefile > Jackson.fa
   
 rm $outfile
+
+
+### REC/ WHERE'S THE OOUTPUT FILE?
+

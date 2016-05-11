@@ -34,11 +34,17 @@ paste - - > $outfile
 #output from ex1
 less $outfile
 
-while read line; do
-uniq > seqs.uniq.fa
-done < $outfile
+### REC/ THIS ISN'T GOING TO DO WHAT YOU WANT IT TO DO, UNIQ OPERATES ON THE WHOLE FILE, NOT ONE LINE AT A TIME
+### REC/ DO THIS INSTEAD
+ uniq $outfile > seqs.uniq.fa
+ 
+#while read line; do
+#uniq > seqs.uniq.fa
+#done < $outfile
 
-grep -c ">' seqs.uniq.fa 
+### REC/ MISMATCHED QUOTES -- SINGLE VERSUS DOUBLE
+### REC/ DOUBLE QUOTES ARE USED IF SOMETHING INSIDE THEM NEEDS 'EXPANDING' LIKE A VARIABLE
+grep -c '>' seqs.uniq.fa 
 
 # define new variable 
 savefile=`basename -s fake $outfile`
@@ -48,3 +54,5 @@ cat $outfile | tr '\t' '\n' > $savefile
 
 # remove outfile
 rm $outfile
+
+### REC/ NO OUTPUT FILE
